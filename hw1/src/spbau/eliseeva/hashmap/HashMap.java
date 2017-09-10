@@ -54,10 +54,14 @@ public class HashMap {
         for(int i = 0; i < _capacity; i++) {
             node = data[i].getFront();
             while(node != null) {
-                newData[node.key.hashCode() % (_capacity * 2)].pushBack(node.key, node.value);
+                int hash = node.key.hashCode() % (_capacity * 2);
+                if (hash < 0) hash += _capacity * 2;
+                newData[hash].pushBack(node.key, node.value);
+                node = data[i].getFront();
             }
         }
         _capacity *= 2;
+        data = newData;
     }
 
     /**
@@ -78,7 +82,7 @@ public class HashMap {
      * @return значение.
      */
     public String get(String key) {
-        Node node = new Node();
+        Node node;
         for(int i = 0; i < _capacity; i++) {
             node = data[i].find(key);
             if (node != null) return node.value;
@@ -92,12 +96,12 @@ public class HashMap {
      * @return Значение удалённого элемента или null если элемента не было.
      */
     public String remove(String key) {
-        Node node = new Node();
+        Node node;
         for(int i = 0; i < _capacity; i++) {
             node = data[i].find(key);
             if (node != null) {
                 String result = node.value;
-                data[i].delete(node);
+                data[i].remove(node);
                 _size--;
                 return result;
             }
@@ -112,10 +116,12 @@ public class HashMap {
      * @return предыдущее значение элемента с таким ключом или null если элемента не было.
      */
     public String put(String key, String value) {
-        String oldValue = null;//remove(key);
+        String oldValue = remove(key);
         if (oldValue == null) _size++;
-        data[key.hashCode() % _capacity].pushBack(key, value);
-        //if (_size > _capacity) rebuild();
+        int hash = key.hashCode() % _capacity;
+        if (hash < 0) hash += _capacity;
+        data[hash].pushBack(key, value);
+        if (_size > _capacity) rebuild();
         return oldValue;
     }
 

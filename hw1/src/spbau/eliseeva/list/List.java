@@ -34,7 +34,7 @@ public class List {
      */
     public void pushBack(String newKey, String newValue) {
         Node node = new Node(newKey, newValue);
-        node.previous= tail.previous;
+        node.previous = tail.previous;
         node.next = tail;
         node.previous.next = node;
         node.next.previous = node;
@@ -59,7 +59,7 @@ public class List {
      */
     public Node find(String findKey) {
         for(Node node = head.next; node != tail; node = node.next) {
-            if (node.key == findKey) return node;
+            if (node.key.equals(findKey)) return node;
         }
         return null;
     }
@@ -68,7 +68,7 @@ public class List {
      * Удаление элемента из списка.
      * @param node элемент, который нужно удалить.
      */
-    public void delete(Node node) {
+    public void remove(Node node) {
         node.previous.next = node.next;
         node.next.previous = node.previous;
     }
