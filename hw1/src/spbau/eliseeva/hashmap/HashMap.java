@@ -1,66 +1,72 @@
 package spbau.eliseeva.hashmap;
 
 import spbau.eliseeva.list.List;
-import spbau.eliseeva.list.Node;
 
 /**
- * Хеш-таблица.
- * @author Елисеева Мария
+ * Хеш-таблица на списках.
+ * Внутри таблицы хранится массив списков. Для ключа каждого элемента при
+ * помощи хеш-функции вычисляется номер списка, в котором элемент хранится.
+ * При совпадении индексов элементы просто хранятся в одном списке и ищутся
+ * проходом по списку за его длину. Это может оказаться неэффективным по
+ * времени, поэтому в момент, когда количество элементов и количество
+ * списков становятся равными, списков становится в два раза больше:
+ * перевыделяется память и все элементы копируются из старой памяти в новую.
  */
 public class HashMap {
-    /**
-     * Массив из списков, тут хранятся данные.
-     */
+    /** Массив из списков, тут хранятся данные. */
     private List [] data;
 
-    /**
-     * Количество элементов в хеш-таблице.
+    /** Количество элементов в хеш-таблице. */
+    private int size = 0;
+
+    /** Количество списков внутри хеш-таблицы. */
+    private int capacity = 17;
+
+    /** Вычисляет хеш для ключа. Используется функция hashCode(),
+     *  а также остаток от деления на количесво списков.
      */
-    private int _size;
+    private int hash(String key) {
+        int hash = key.hashCode() % capacity;
+        if (hash < 0) hash += capacity;
+        return hash;
+    }
 
     /**
-     * Количество списков внутри хеш-таблицы.
-     */
-    private int _capacity;
-
-    /**
      * Количество элементов в хеш-таблице.
-     * @return поле _size
+     * @return поле size
      */
     public int size() {
-        return _size;
+        return size;
     }
 
-    /**
-     * Конструктор.
-     */
+    /** Конструктор. Инициализирует массив пустыми списками. */
     public HashMap() {
-        _size = 0;
-        _capacity = 1;
-        data = new List[1];
-        data[0] = new List();
+        data = new List[capacity];
+        for (int i = 0; i < capacity; i++) {
+            data[i] = new List();
+        }
     }
 
     /**
-     * Удваивает количество списков.
-     * (Вызвается когда элементов становится больше, чем списков).
+     * Удваивает количество списков - все элементы перемещаются
+     * в новый массив большего размера.
+     * Вызвается когда элементов становится больше, чем списков.
      */
     private void rebuild() {
-        List [] newData = new List[_capacity * 2];
-        for (int i = 0; i < _capacity * 2; i++) {
+        capacity *= 2;
+        List [] newData = new List[capacity];
+        for (int i = 0; i < capacity; i++) {
             newData[i] = new List();
         }
-        Node node;
-        for(int i = 0; i < _capacity; i++) {
-            node = data[i].getFront();
-            while(node != null) {
-                int hash = node.key.hashCode() % (_capacity * 2);
-                if (hash < 0) hash += _capacity * 2;
-                newData[hash].pushBack(node.key, node.value);
-                node = data[i].getFront();
+        String key, value;
+        for (int i = 0; i < capacity / 2; i++) {
+            key = data[i].getFrontKey();
+            value = data[i].getFrontValue();
+            while (key != null) {
+                newData[hash(key)].pushBack(key, value);
+                data[i].removeFront();
             }
         }
-        _capacity *= 2;
         data = newData;
     }
 
@@ -70,8 +76,8 @@ public class HashMap {
      * @return true если есть ли элемент с таким ключом, false иначе.
      */
     public boolean contains(String key) {
-        for(int i = 0; i < _capacity; i++) {
-            if (data[i].find(key) != null) return true;
+        if (data[hash(key)].find(key) != null) {
+            return true;
         }
         return false;
     }
@@ -82,12 +88,7 @@ public class HashMap {
      * @return значение.
      */
     public String get(String key) {
-        Node node;
-        for(int i = 0; i < _capacity; i++) {
-            node = data[i].find(key);
-            if (node != null) return node.value;
-        }
-        return null;
+        return data[hash(key)].find(key);
     }
 
     /**
@@ -96,15 +97,10 @@ public class HashMap {
      * @return Значение удалённого элемента или null если элемента не было.
      */
     public String remove(String key) {
-        Node node;
-        for(int i = 0; i < _capacity; i++) {
-            node = data[i].find(key);
-            if (node != null) {
-                String result = node.value;
-                data[i].remove(node);
-                _size--;
-                return result;
-            }
+        String oldValue = data[hash(key)].find(key);
+        data[hash(key)].remove(key);
+        if (oldValue != null) {
+            size--;
         }
         return null;
     }
@@ -117,21 +113,21 @@ public class HashMap {
      */
     public String put(String key, String value) {
         String oldValue = remove(key);
-        if (oldValue == null) _size++;
-        int hash = key.hashCode() % _capacity;
-        if (hash < 0) hash += _capacity;
-        data[hash].pushBack(key, value);
-        if (_size > _capacity) rebuild();
+        if (oldValue == null) {
+            size++;
+        }
+        data[hash(key)].pushBack(key, value);
+        if (size > capacity) {
+            rebuild();
+        }
         return oldValue;
     }
 
-    /**
-     * Удаляяет все элементы из хеш-таблицы.
-     */
+    /** Удаляяет все элементы из хеш-таблицы. */
     public void clear() {
-        for(int i = 0; i < _capacity; i++) {
+        for (int i = 0; i < capacity; i++) {
             data[i].clear();
         }
-        _size = 0;
+        size = 0;
     }
 }
