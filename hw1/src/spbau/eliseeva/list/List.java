@@ -19,13 +19,13 @@ public class List {
          * @param newKey ключ.
          * @param newValue значение.
          */
-        public Node(String newKey, String newValue) {
+        private Node(String newKey, String newValue) {
             key = newKey;
             value = newValue;
         }
 
         /** Конструктор без параметров. */
-        public Node() {
+        private Node() {
         }
     }
 
@@ -63,7 +63,6 @@ public class List {
 
     /** Удаляет первый элемент списка. */
     public void removeFront() {
-        Node result = head.next;
         head.next.next.previous = head;
         head.next = head.next.next;
     }

@@ -102,7 +102,7 @@ public class HashMap {
         if (oldValue != null) {
             size--;
         }
-        return null;
+        return oldValue;
     }
 
     /**
@@ -113,9 +113,7 @@ public class HashMap {
      */
     public String put(String key, String value) {
         String oldValue = remove(key);
-        if (oldValue == null) {
-            size++;
-        }
+        size++;
         data[hash(key)].pushBack(key, value);
         if (size > capacity) {
             rebuild();
