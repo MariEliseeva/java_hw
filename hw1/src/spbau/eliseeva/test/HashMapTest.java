@@ -50,13 +50,21 @@ public class HashMapTest {
     }
 
     @Test
-    public void clear() throws Exception {
+    public void clearTest() throws Exception {
         HashMap hashMap = new HashMap();
         hashMap.put("key1", "value1");
         hashMap.put("key2", "value2");
         hashMap.clear();
         assertEquals(null, hashMap.get("key2"));
         assertEquals(null, hashMap.get("key1"));
+    }
+    @Test
+    public void rebuildTest() throws Exception {
+        HashMap hashMap = new HashMap();
+        for (int i = 0; i < 18; i++) {
+            hashMap.put(String.valueOf(i), "value");
+        }
+        assertEquals("value", hashMap.get("17"));
     }
 
 }

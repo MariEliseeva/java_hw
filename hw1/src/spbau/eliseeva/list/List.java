@@ -9,8 +9,8 @@ package spbau.eliseeva.list;
 public class List {
     /** Внутренний класс, представляющий собой один элемент списка. */
     private class Node {
-        private Node next = this;
-        private Node previous = this;
+        private Node next = null;
+        private Node previous = null;
         private String key;
         private String value;
 

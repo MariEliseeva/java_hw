@@ -27,7 +27,9 @@ public class HashMap {
      */
     private int hash(String key) {
         int hash = key.hashCode() % capacity;
-        if (hash < 0) hash += capacity;
+        if (hash < 0) {
+            hash += capacity;
+        }
         return hash;
     }
 
@@ -65,6 +67,8 @@ public class HashMap {
             while (key != null) {
                 newData[hash(key)].pushBack(key, value);
                 data[i].removeFront();
+                key = data[i].getFrontKey();
+                value = data[i].getFrontValue();
             }
         }
         data = newData;
@@ -76,10 +80,7 @@ public class HashMap {
      * @return true если есть ли элемент с таким ключом, false иначе.
      */
     public boolean contains(String key) {
-        if (data[hash(key)].find(key) != null) {
-            return true;
-        }
-        return false;
+        return (data[hash(key)].find(key) != null);
     }
 
     /**
