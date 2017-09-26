@@ -1,5 +1,6 @@
 package spbau.eliseeva.spiral;
 
+import java.util.Comparator;
 import java.util.Random;
 import java.util.Arrays;
 
@@ -65,9 +66,7 @@ public class Spiral {
      */
     public void sortCols() {
         transpose();
-        for (int i = 0; i < size; i++) {
-            Arrays.sort(data[i]);
-        }
+        Arrays.sort(data, Comparator.comparingInt(row -> row[0]));
         transpose();
     }
 
