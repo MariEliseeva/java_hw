@@ -2,6 +2,8 @@ package spbau.eliseeva.trie;
 
 import org.junit.Test;
 
+import java.io.*;
+
 import static org.junit.Assert.*;
 
 /** This class tests the Trie class. */
@@ -86,5 +88,62 @@ public class TrieTest {
         assertEquals(2, trie.howManyStartsWithPrefix("elem"));
         assertEquals(0, trie.howManyStartsWithPrefix("eleME"));
     }
+
+    /** Tests serialization. */
+    @Test
+    public void serializeTest() {
+        Trie trie = new Trie();
+        trie.add("element1");
+        trie.add("element2");
+        trie.add("eleMent1");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            trie.serialize(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tests deserialization.
+     * Serialize and deserialize trie, compare it to trie2.
+     */
+    @Test
+    public void deserializeTest() {
+        Trie trie = new Trie();
+        trie.add("element1");
+        trie.add("element2");
+        trie.add("eleMent1");
+        Trie trie2 = trie;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            trie.serialize(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] byteArray = out.toByteArray();
+        ByteArrayInputStream in = new ByteArrayInputStream(byteArray);
+        try {
+            trie.deserialize(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(trie.size(), trie2.size());
+        assertEquals(trie.root(), trie2.root());
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

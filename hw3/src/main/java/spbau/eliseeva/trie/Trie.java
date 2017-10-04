@@ -1,12 +1,12 @@
 package spbau.eliseeva.trie;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.HashMap;
 
 /**
  * Class represents Trie data structure, which is used for keeping strings.
- * Consists of inner elements -- Vertexes, each of them have pointers to next
- * and a mark -- if it is the end of some string or not.
+ * Consists of inner elements - Vertexes, each of them has pointers to next Vertices
+ * and a mark - if it is the end of some string or not.
  * The Trie exactly is a root-Vertex.
  */
 public class Trie implements Serializable {
@@ -15,7 +15,7 @@ public class Trie implements Serializable {
      * Pointers to next Vertices are kept in a HashMap.
      * Key is a letter on an Edge between Vertices.
      */
-    private class Vertex {
+    private class Vertex implements Serializable {
         /**
          * Marks that the Vertex is the end of a string.
          * Used for finding if a string is in Trie or not.
@@ -35,8 +35,13 @@ public class Trie implements Serializable {
     /** Root of the Trie, Vertex which we start all operations from */
     private Vertex root = new Vertex();
 
-    /** Number of words in the Trie */
-    private int size = 0;
+    /**
+     * Returns root Vertex, used for checking tries' equality.
+     * @return root
+     */
+    public Vertex root() {
+        return root;
+    }
 
     /**
      * Finds if a string is in the Trie or not.
@@ -56,8 +61,7 @@ public class Trie implements Serializable {
                 break;
             }
         }
-        if (ifContains) ifContains = currentVertex.isEnd;
-        return ifContains;
+        return ifContains && currentVertex.isEnd;
     }
 
     /**
@@ -67,8 +71,9 @@ public class Trie implements Serializable {
      * @return true if the string is new, false if it was in the Trie before
      */
     public boolean add(String element) {
-        if (contains(element)) return false;
-        size++;
+        if (contains(element)) {
+            return false;
+        }
         Vertex currentVertex = root;
         Vertex newVertex;
         for (int i = 0; i < element.length(); i++) {
@@ -94,8 +99,9 @@ public class Trie implements Serializable {
      * @return true if the string was removed, false if the string was not in the Trie.
      */
     public boolean remove(String element) {
-        if (!contains(element)) return false;
-        size--;
+        if (!contains(element)) {
+            return false;
+        }
         Vertex currentVertex = root;
         Vertex oldVertex;
         for (int i = 0; i < element.length(); i++) {
@@ -116,7 +122,7 @@ public class Trie implements Serializable {
      * @return the size
      */
     public int size() {
-        return size;
+        return root.counter;
     }
 
     /**
@@ -124,7 +130,7 @@ public class Trie implements Serializable {
      * Goes from the root, when come to a Vertex
      * with the last symbol of the prefix -- returns counter,
      * how many strings begin from current Vertex.
-     * @param prefix prefix
+     * @param prefix
      * @return number of strings, started with given prefix
      */
     public int howManyStartsWithPrefix(String prefix) {
@@ -136,6 +142,34 @@ public class Trie implements Serializable {
                 return 0;
             }
         }
-        return (currentVertex.counter);
+        return currentVertex.counter;
+    }
+
+    /**
+     * Serialize Trie.
+     * @param out stream to write.
+     * @throws IOException
+     */
+    public void serialize(OutputStream out) throws IOException {
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
+        objectOutputStream.writeObject(this);
+        objectOutputStream.close();
+    }
+
+    /**
+     * Deserialize Trie.
+     * @param in stream, which the Trie is taken from.
+     * @throws IOException
+     */
+    public void deserialize(InputStream in) throws IOException {
+        ObjectInputStream objectInputStream = new ObjectInputStream(in);
+        Trie trie = null;
+        try {
+            trie = (Trie) objectInputStream.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        root = trie.root;
+        objectInputStream.close();
     }
 }
