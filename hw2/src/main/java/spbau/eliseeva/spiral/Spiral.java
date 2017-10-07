@@ -12,7 +12,7 @@ public class Spiral {
     /** Array with numbers*/
     private int [][] data;
     /** Size - width and height (they are equal)*/
-    private int size;
+    private final int size;
     /** Array with numbers in spiral-way*/
     private int[] spiral;
 

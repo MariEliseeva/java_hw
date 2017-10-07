@@ -4,7 +4,10 @@ import org.junit.Test;
 import spbau.eliseeva.spiral.Spiral;
 import static org.junit.Assert.*;
 
-
+/**
+ * This class tests Spiral class's methods.
+ * Tests two public methods - sortCols() and getSpiral().
+ */
 public class SpiralTest {
     @Test
     public void sortColsTest() throws Exception {
@@ -16,7 +19,7 @@ public class SpiralTest {
     }
 
     @Test
-    public void printTest() throws Exception {
+    public void getSpiralTest() throws Exception {
         int [][] matrix = new int[5][5];
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
@@ -29,5 +32,4 @@ public class SpiralTest {
                 6, 11, 16, 21, 22, 23, 24, 25, 20, 15, 10, 5, 4, 3, 2, 1};
         assertArrayEquals(expectedResult, spiralString);
     }
-
 }
