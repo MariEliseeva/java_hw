@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import static org.junit.Assert.*;
 import static spbau.eliseeva.zipFile.MyZipFile.extractFilesByPattern;
@@ -12,6 +14,7 @@ import static spbau.eliseeva.zipFile.MyZipFile.extractFilesByPattern;
 /**
  * The class for testing ZipFile class's method extractFilesByPattern.
  * Using one recursive private method to compare directories and to delete created files.
+ * Also using a directory forTesting to match a result with an expected.
  */
 public class MyZipFileTest {
     /**
@@ -24,6 +27,8 @@ public class MyZipFileTest {
      * @throws IOException
      */
     private void compare(File[] expected, File[] real) throws IOException {
+        Arrays.sort(expected, Comparator.comparing(File::getName));
+        Arrays.sort(real, Comparator.comparing(File::getName));
         for (int i = 0; i < expected.length; i++) {
             real[i].deleteOnExit();
             assertEquals(expected[i].getName(), real[i].getName());
@@ -51,6 +56,7 @@ public class MyZipFileTest {
     @Test
     public void extractFilesByPatternTest() throws Exception {
         extractFilesByPattern("./forTesting", ".*17.*");
+
         File expectedResult = new File("./forTesting/123Results");
         File realResult = new File("./forTesting/12345/123");
         realResult.deleteOnExit();
@@ -58,7 +64,9 @@ public class MyZipFileTest {
                 realResult.listFiles().length);
         compare(expectedResult.listFiles(), realResult.listFiles());
 
-        expectedResult = new File("./forTesting/12Results");
+        new File("./forTesting/12Results/aaa17b/").mkdir();
+        //previous line is needed, because git doesn't save empty directories
+        expectedResult = new File("./forTesting/12Results/");
         realResult = new File("./forTesting/12345/qwerty/12");
         realResult.deleteOnExit();
         assertEquals(expectedResult.listFiles().length,
