@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 /**
  * This class generates matrix with random odd size
- * and fills it with random numbers. The matrix can be printed,
- * sorted by cols and printed in spiral-way (spiral, which begins in the center).
+ * and fills it with random numbers. The matrix can be returned,
+ * sorted by cols and returned in spiral-way (spiral, which begins in the center).
  */
 public class Spiral {
     /** Array with numbers*/
@@ -18,7 +18,9 @@ public class Spiral {
 
     /**
      * Constructor.
-     * Chooses random size and fills data with random numbers.
+     * Makes data and size same as given values.
+     * @param spiralSize size
+     * @param spiralData matrix's numbers in an array
      */
     public Spiral(int spiralSize, int[][] spiralData) {
         size = spiralSize;
@@ -28,7 +30,7 @@ public class Spiral {
 
     /**
      * Changes rows and cols of matrix.
-     * Is used for simpler sorting of matrix
+     * Is used for simpler sorting of matrix.
      */
     private void transpose() {
         int[][] newData = new int[size][size];
@@ -40,19 +42,16 @@ public class Spiral {
         data = newData;
     }
 
-    /** Prints matrix*/
-    public int[][] printMatrix() {
-        return data;
-    }
-
     /**
      * Sorts matrix cols.
      * Transposes matrix, sorts its rows and transposes back.
+     * @return matrix's numbers in an array
      */
-    public void sortCols() {
+    public int[][] sortCols() {
         transpose();
         Arrays.sort(data, Comparator.comparingInt(row -> row[0]));
         transpose();
+        return data;
     }
 
     /**
@@ -60,7 +59,7 @@ public class Spiral {
      * @param length length of border which should be printed
      * @param index index in spiral array
      */
-    private void print(int length, int index) {
+    private void makeSpiral(int length, int index) {
         int dataIndex = (size - length - 1) / 2;
         if (length == 0) {
             spiral[index] = data[dataIndex][dataIndex];
@@ -82,15 +81,16 @@ public class Spiral {
             spiral[index] = data[i][dataIndex];
             index--;
         }
-        print(length - 2, index);
+        makeSpiral(length - 2, index);
     }
 
     /**
-     * Prints spiral array.
+     * Returns spiral array.
      * Calls recursive method print, which fills spiral array.
+     * @return spiral in an array
      */
-    public int[] printSpiral() {
-        print(size - 1, size * size - 1);
+    public int[] getSpiral() {
+        makeSpiral(size - 1, size * size - 1);
         return spiral;
     }
 }

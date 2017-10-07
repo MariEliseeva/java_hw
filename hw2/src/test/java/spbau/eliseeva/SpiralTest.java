@@ -10,8 +10,7 @@ public class SpiralTest {
     public void sortColsTest() throws Exception {
         int [][] matrix = {{10, 5, 7}, {2, 7, 6}, {11, 2, 7}};
         Spiral spiral = new Spiral(3, matrix);
-        spiral.sortCols();
-        matrix = spiral.printMatrix();
+        matrix = spiral.sortCols();
         int [][] expectedResult = {{5, 7, 10}, {7, 6, 2}, {2, 7, 11}};
         assertArrayEquals(expectedResult, matrix);
     }
@@ -25,7 +24,7 @@ public class SpiralTest {
             }
         }
         Spiral spiral = new Spiral(5, matrix);
-        int [] spiralString = spiral.printSpiral();
+        int [] spiralString = spiral.getSpiral();
         int [] expectedResult = {13, 12, 17, 18, 19, 14, 9, 8, 7,
                 6, 11, 16, 21, 22, 23, 24, 25, 20, 15, 10, 5, 4, 3, 2, 1};
         assertArrayEquals(expectedResult, spiralString);
