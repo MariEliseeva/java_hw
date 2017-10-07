@@ -1,7 +1,6 @@
 package spbau.eliseeva.spiral;
 
 import java.util.Comparator;
-import java.util.Random;
 import java.util.Arrays;
 
 /**
@@ -21,18 +20,10 @@ public class Spiral {
      * Constructor.
      * Chooses random size and fills data with random numbers.
      */
-    public Spiral() {
-        Random random = new Random();
-        size = random.nextInt() % 10;
-        if (size < 0) size += 10;
-        if (size % 2 == 0) size += 1;
-        data = new int[size][size];
+    public Spiral(int spiralSize, int[][] spiralData) {
+        size = spiralSize;
+        data = spiralData;
         spiral = new int[size * size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                data[i][j] = random.nextInt() % 10;
-            }
-        }
     }
 
     /**
@@ -50,14 +41,8 @@ public class Spiral {
     }
 
     /** Prints matrix*/
-    public void printMatrix() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                System.out.print(data[i][j]);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
+    public int[][] printMatrix() {
+        return data;
     }
 
     /**
@@ -104,12 +89,8 @@ public class Spiral {
      * Prints spiral array.
      * Calls recursive method print, which fills spiral array.
      */
-    public void printSpiral() {
+    public int[] printSpiral() {
         print(size - 1, size * size - 1);
-        for (int i = 0; i < size * size; i++) {
-            System.out.print(spiral[i]);
-            System.out.print(" ");
-        }
-        System.out.println();
+        return spiral;
     }
 }
