@@ -46,8 +46,7 @@ public class MyZipFile {
      * @param regularExpression regular expression, which it compared to a file's name
      * @throws IOException
      */
-    private static void findInZip(File file, String regularExpression)
-            throws IOException {
+    private static void findInZip(File file, String regularExpression) throws IOException {
         ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file.toString()));
         ZipEntry zipEntry;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
