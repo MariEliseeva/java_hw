@@ -59,11 +59,8 @@ public class MySet<T extends Comparable<T>> {
      * @return true if an element is in Node or in it's subtree, false if not
      */
     private boolean contains(T t, Node curNode) {
-        if (curNode == null) {
-            return false;
-        }
-        return t.equals(curNode.value) ||
-                contains(t, curNode.left) || contains(t, curNode.right);
+        return curNode != null && (t.equals(curNode.value) ||
+                contains(t, curNode.left) || contains(t, curNode.right));
     }
 
     /**
