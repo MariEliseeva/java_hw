@@ -1,8 +1,5 @@
 package spbau.eliseeva.set;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * This class is a generic container for elements of current type.
  * Each element exists only in one copy and can't be repeated twice or more.
@@ -61,7 +58,6 @@ public class MySet<T extends Comparable<T>> {
      * @param curNode Node to search in
      * @return true if an element is in Node or in it's subtree, false if not
      */
-    @Contract("_, null -> false")
     private boolean contains(T t, Node curNode) {
         if (curNode == null) {
             return false;
@@ -87,7 +83,6 @@ public class MySet<T extends Comparable<T>> {
      * @param curNode node which subtree we are adding the value to
      * @return new subtree's root
      */
-    @NotNull
     private Node add(T t, Node curNode) {
         if (curNode == null) {
             return new Node(t);
