@@ -36,15 +36,8 @@ public class Trie implements Serializable {
     private Vertex root = new Vertex();
 
     /**
-     * Returns root Vertex, used for checking tries' equality.
-     * @return root
-     */
-    public Vertex root() {
-        return root;
-    }
-
-    /**
      * Finds if a string is in the Trie or not.
+     * Works for the length of word, which is being found. (Because HashMap is O(1))
      * Goes from the root by given edges - symbols in string.
      * If no edge ot isEnd is not true - no such element in Trie.
      * @param element string to be found
@@ -52,20 +45,21 @@ public class Trie implements Serializable {
      */
     public boolean contains(String element) {
         Vertex currentVertex = root;
-        boolean ifContains = true;
+        boolean isContained = true;
         for (int i = 0; i < element.length(); i++) {
             if (currentVertex.next.containsKey(element.charAt(i))) {
                 currentVertex = currentVertex.next.get(element.charAt(i));
             } else {
-                ifContains = false;
+                isContained = false;
                 break;
             }
         }
-        return ifContains && currentVertex.isEnd;
+        return isContained && currentVertex.isEnd;
     }
 
     /**
      * Adds string to the Trie.
+     * Works for the length of the added word. (Because HashMap is O(1))
      * Goes from the root by given edges, if no edge -- creates one.
      * @param element string to be put
      * @return true if the string is new, false if it was in the Trie before
@@ -92,6 +86,7 @@ public class Trie implements Serializable {
 
     /**
      * Removes string from the Trie.
+     * Works for the length of the word, which is being removed. (Because HashMap is O(1))
      * Goes from the root and if no more words started
      * with one of next Vertices -- removes if from the HashMap.
      * Set isEnd value false.
@@ -119,6 +114,7 @@ public class Trie implements Serializable {
     }
 
     /** Tells how many strings are in the Trie.
+     *  Works for O(1).
      * @return the size
      */
     public int size() {
@@ -127,10 +123,11 @@ public class Trie implements Serializable {
 
     /**
      * Tells how many strings starts from given prefix.
+     * Works for the length of the prefix. (Because HashMap is O(1))
      * Goes from the root, when come to a Vertex
      * with the last symbol of the prefix -- returns counter,
      * how many strings begin from current Vertex.
-     * @param prefix
+     * @param prefix prefix to be found
      * @return number of strings, started with given prefix
      */
     public int howManyStartsWithPrefix(String prefix) {
@@ -148,7 +145,7 @@ public class Trie implements Serializable {
     /**
      * Serialize Trie.
      * @param out stream to write.
-     * @throws IOException
+     * @throws IOException thrown if had problems with writing to OutputStream
      */
     public void serialize(OutputStream out) throws IOException {
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
@@ -159,7 +156,7 @@ public class Trie implements Serializable {
     /**
      * Deserialize Trie.
      * @param in stream, which the Trie is taken from.
-     * @throws IOException
+     * @throws IOException thrown if had problems with reading from InputStream
      */
     public void deserialize(InputStream in) throws IOException {
         ObjectInputStream objectInputStream = new ObjectInputStream(in);
@@ -169,7 +166,9 @@ public class Trie implements Serializable {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        root = trie.root;
+        if (trie != null) {
+            root = trie.root;
+        }
         objectInputStream.close();
     }
 }

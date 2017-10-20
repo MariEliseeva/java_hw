@@ -11,10 +11,9 @@ public class TrieTest {
     /**
      * Tests add method, checks 3 different variants.
      * First and third -- adding new string, second -- adding existing one.
-     * @throws Exception
      */
     @Test
-    public void addTest() throws Exception {
+    public void addTest() {
         Trie trie = new Trie();
         assertEquals(true, trie.add("element1"));
         assertEquals(false, trie.add("element1"));
@@ -24,10 +23,9 @@ public class TrieTest {
     /**
      * Tests contains method, checks 3 different variants.
      * First and second strings are in the Trie, third is not.
-     * @throws Exception
      */
     @Test
-    public void containsTest() throws Exception {
+    public void containsTest() {
         Trie trie = new Trie();
         trie.add("element");
         trie.add("eleMent");
@@ -40,10 +38,9 @@ public class TrieTest {
      * Tests remove method, checks 3 different variants.
      * First and second existed in the Trie,
      * third one -- removing a string, which was already removed.
-     * @throws Exception
      */
     @Test
-    public void removeTest() throws Exception {
+    public void removeTest() {
         Trie trie = new Trie();
         trie.add("element1");
         trie.add("element2");
@@ -57,10 +54,9 @@ public class TrieTest {
      * Tests size method, checks 4 different variants.
      * Firstly size is 0, then one string appears, then 2 more strings,
      * then one of the strings is removing.
-     * @throws Exception
      */
     @Test
-    public void sizeTest() throws Exception {
+    public void sizeTest() {
         Trie trie = new Trie();
         assertEquals(0, trie.size());
         trie.add("element1");
@@ -76,10 +72,9 @@ public class TrieTest {
      * Tests howManyStartsWithPrefix method, checks 3 different variants.
      * All three elements start with "ele", but only 2 start with "elem"
      * and nothing starts with "eleME".
-     * @throws Exception
      */
     @Test
-    public void howManyStartsWithPrefixTest() throws Exception {
+    public void howManyStartsWithPrefixTest() {
         Trie trie = new Trie();
         trie.add("element1");
         trie.add("element2");
@@ -89,61 +84,41 @@ public class TrieTest {
         assertEquals(0, trie.howManyStartsWithPrefix("eleME"));
     }
 
-    /** Tests serialization. */
+    /**
+     * Tests serialisation.
+     * @throws IOException thrown if had problems with OutputStream
+     */
     @Test
-    public void serializeTest() {
+    public void serializeTest() throws IOException {
         Trie trie = new Trie();
         trie.add("element1");
         trie.add("element2");
         trie.add("eleMent1");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            trie.serialize(out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        trie.serialize(out);
     }
 
     /**
      * Tests deserialization.
-     * Serialize and deserialize trie, compare it to trie2.
+     * Serialize and then deserialize trie.
+     * Checks if the size is still the same and the same elements are in.
+     * @throws IOException thrown if problems with reading or writing to stream
      */
     @Test
-    public void deserializeTest() {
+    public void deserializeTest() throws IOException {
         Trie trie = new Trie();
         trie.add("element1");
         trie.add("element2");
         trie.add("eleMent1");
-        Trie trie2 = trie;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            trie.serialize(out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        trie.serialize(out);
         byte[] byteArray = out.toByteArray();
         ByteArrayInputStream in = new ByteArrayInputStream(byteArray);
-        try {
-            trie.deserialize(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertEquals(trie.size(), trie2.size());
-        assertEquals(trie.root(), trie2.root());
+        trie.deserialize(in);
+        assertEquals(3, trie.size());
+        assertEquals(true, trie.contains("element1"));
+        assertEquals(true, trie.contains("element2"));
+        assertEquals(true, trie.contains("eleMent1"));
+        assertEquals(false, trie.contains("eleMENT"));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
