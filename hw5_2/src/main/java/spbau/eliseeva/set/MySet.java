@@ -23,13 +23,6 @@ public class MySet<T extends Comparable<T>> {
         /** Right child, null if doesn't exist.*/
         private Node right = null;
 
-        /** Constructor. Takes left and right children and a value,makes a Node of them.*/
-        Node (Node newLeft, Node newRight, T newValue) {
-            left = newLeft;
-            right = newRight;
-            value = newValue;
-        }
-
         /** Constructor for Node without left and right children.*/
         Node (T newValue) {
             value = newValue;
@@ -78,16 +71,20 @@ public class MySet<T extends Comparable<T>> {
      * if greater - in right child.
      * @param t value to add
      * @param curNode node which subtree we are adding the value to
-     * @return new subtree's root
      */
-    private Node add(T t, Node curNode) {
-        if (curNode == null) {
-            return new Node(t);
-        }
+    private void add(T t, Node curNode) {
         if (t.compareTo(curNode.value) < 0) {
-            return new Node (add(t, curNode.left), curNode.right, curNode.value);
+            if (curNode.left == null) {
+                curNode.left = new Node(t);
+            } else {
+                add(t, curNode.left);
+            }
         } else {
-            return new Node (curNode.left, add(t, curNode.right), curNode.value);
+            if (curNode.right == null) {
+                curNode.right = new Node(t);
+            } else {
+                add(t, curNode.right);
+            }
         }
     }
 
@@ -100,7 +97,11 @@ public class MySet<T extends Comparable<T>> {
         if (contains(t)) {
             return false;
         }
-        root = add(t, root);
+        if (root == null) {
+            root = new Node(t);
+        } else {
+            add(t, root);
+        }
         size++;
         return true;
     }

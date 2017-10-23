@@ -12,7 +12,7 @@ public class MySetTest {
     /**
      * Adds elements to the container and checking
      * if they were added or already existed.
-     * @throws Exception
+     * @throws Exception thrown if test is not ok
      */
     @Test
     public void add() throws Exception {
@@ -27,7 +27,7 @@ public class MySetTest {
 
     /**
      * Checks the size of an empty container or a container with two elements.
-     * @throws Exception
+     * @throws Exception thrown if test is not ok
      */
     @Test
     public void size() throws Exception {
@@ -42,7 +42,7 @@ public class MySetTest {
 
     /**
      * Adds elements in the container and checks if they are there or not.
-     * @throws Exception
+     * @throws Exception thrown if test is not ok
      */
     @Test
     public void contains() throws Exception {
