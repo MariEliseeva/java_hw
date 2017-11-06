@@ -85,27 +85,13 @@ public class TrieTest {
     }
 
     /**
-     * Tests serialisation.
-     * @throws IOException thrown if had problems with OutputStream
-     */
-    @Test
-    public void serializeTest() throws IOException {
-        Trie trie = new Trie();
-        trie.add("element1");
-        trie.add("element2");
-        trie.add("eleMent1");
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        trie.serialize(out);
-    }
-
-    /**
      * Tests deserialization.
      * Serialize and then deserialize trie.
      * Checks if the size is still the same and the same elements are in.
      * @throws IOException thrown if problems with reading or writing to stream
      */
     @Test
-    public void deserializeTest() throws IOException {
+    public void serializeAndDeserializeTest() throws IOException {
         Trie trie = new Trie();
         trie.add("element1");
         trie.add("element2");

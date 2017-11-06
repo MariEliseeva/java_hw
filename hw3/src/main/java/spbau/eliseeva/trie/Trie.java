@@ -164,7 +164,7 @@ public class Trie implements Serializable {
         try {
             trie = (Trie) objectInputStream.readObject();
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("In the inputstream was no trie object, check inputstream.");
         }
         if (trie != null) {
             root = trie.root;
