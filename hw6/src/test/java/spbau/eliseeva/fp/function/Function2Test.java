@@ -76,5 +76,4 @@ public class Function2Test {
         assertEquals(new Integer(47), new MyFunction2().curry().apply(25).apply("aaa"));
         assertEquals(new Integer(25), new MyFunction2().curry().apply(17).apply("aaccbbdde"));
     }
-
 }

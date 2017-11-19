@@ -18,7 +18,7 @@ public interface Function1<T, K> {
      * @param value argument
      * @return function value from the given argument
      */
-     K apply(T value);
+    K apply(T value);
 
     /**
      * Makes new function, which is a composition of given and current functions.

@@ -87,5 +87,4 @@ public class CollectionsTest {
         assertEquals(expectedResult, Collections.foldr((value1, value2) -> value2 +
                 value1 % 10 + value1 / 10 % 10 + value1 / 100, 0,linkedList));
     }
-
 }
