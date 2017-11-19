@@ -1,5 +1,7 @@
 package spbau.eliseeva.fp.function;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This interface is a function of two arguments.
  * All classes, which implements it, should override
@@ -26,7 +28,7 @@ public interface Function2<T, V, K> {
      * @param <P> type of returning value (of given and of the resulted function)
      * @return composition of current and given functions
      */
-    default <P> Function2<T, V, P> compose(Function1<K, P> g) {
+    default @NotNull <P> Function2<T, V, P> compose(@NotNull Function1<? super K, ? extends P> g) {
         return (value1, value2) -> g.apply(apply(value1, value2));
     }
 
@@ -37,7 +39,7 @@ public interface Function2<T, V, K> {
      * @param value1 value which is put on the first argument's place
      * @return resulted function
      */
-    default Function1<V, K> bind1(T value1) {
+    default @NotNull Function1<V, K> bind1(T value1) {
         return value2 -> apply(value1, value2);
     }
 
@@ -48,7 +50,7 @@ public interface Function2<T, V, K> {
      * @param value2 value which is put on the second argument's place
      * @return resulted function
      */
-    default Function1<T, K> bind2(V value2) {
+    default @NotNull Function1<T, K> bind2(V value2) {
         return value1 -> apply(value1, value2);
     }
 
@@ -57,7 +59,7 @@ public interface Function2<T, V, K> {
      * which return-value is also a function.
      * @return function, which returns function
      */
-    default Function1<V, Function1<T, K>> curry() {
-        return value2 -> value1 -> apply(value1, value2);
+    default @NotNull Function1<T, Function1<V, K>> curry() {
+        return this::bind1;
     }
 }

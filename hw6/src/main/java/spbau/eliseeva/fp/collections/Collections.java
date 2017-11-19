@@ -1,11 +1,13 @@
 package spbau.eliseeva.fp.collections;
 
+import org.jetbrains.annotations.NotNull;
 import spbau.eliseeva.fp.function.Function1;
 import spbau.eliseeva.fp.function.Function2;
 import spbau.eliseeva.fp.function.Predicate;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The class with a lot of static methods for working with iterable collections.
@@ -19,7 +21,8 @@ public class Collections {
      * @param <K> type of results
      * @return linked list of results
      */
-    public static <T, K> LinkedList<K> map(Function1<T, K> function, Iterable<T> array) {
+    public static @NotNull <T, K> List<K> map(@NotNull Function1<? super T, ? extends K> function,
+                       @NotNull Iterable<T> array) {
         LinkedList<K> result = new LinkedList<>();
         for (T element : array) {
             result.add(function.apply(element));
@@ -34,7 +37,8 @@ public class Collections {
      * @param <K> type of elements if the collection
      * @return linked list with teh results
      */
-    public static <K> LinkedList<K> filter(Predicate<K> predicate, Iterable<K> array) {
+    public static @NotNull <K> List<K> filter(@NotNull Predicate<? super K> predicate,
+                                              @NotNull Iterable<K> array) {
         LinkedList<K> result = new LinkedList<>();
         for (K element : array) {
             if (predicate.apply(element)) {
@@ -51,7 +55,8 @@ public class Collections {
      * @param <K> type of elements if the collection
      * @return linked list with teh results
      */
-    public static <K> LinkedList<K> takeWhile(Predicate<K> predicate, Iterable<K> array) {
+    public static @NotNull <K> List<K> takeWhile(@NotNull Predicate<? super K> predicate,
+                                                 @NotNull Iterable<K> array) {
         LinkedList<K> result = new LinkedList<>();
         Iterator<K> iterator = array.iterator();
         K element = iterator.next();
@@ -72,7 +77,8 @@ public class Collections {
      * @param <K> type of elements if the collection
      * @return linked list with teh results
      */
-    public static <K> LinkedList<K> takeUnless(Predicate<K> predicate, Iterable<K> array) {
+    public static @NotNull <K> List<K> takeUnless(@NotNull Predicate<? super K> predicate,
+                                                  @NotNull Iterable<K> array) {
        return takeWhile(predicate.not(), array);
     }
 
@@ -86,11 +92,13 @@ public class Collections {
      * @param <V> type of function's result
      * @return last result of application
      */
-    public static <T, V> V foldl(Function2<V, T, V> function, V value, Iterable<T> array) {
+    public static @NotNull <T, V> V foldl(@NotNull Function2<? super V, ? super T, ? extends V> function,
+                                          @NotNull V value, @NotNull Iterable<T> array) {
         return foldl(function, value, array.iterator());
     }
 
-    private static <T, V> V foldl(Function2<V, T, V> function, V value, Iterator<T> iterator ) {
+    private static @NotNull <T, V> V foldl(@NotNull Function2<? super V, ? super T, ? extends V> function,
+                                  @NotNull V value, @NotNull Iterator<T> iterator ) {
         if (iterator.hasNext()) {
             return foldl(function, function.apply(value, iterator.next()), iterator);
         } else {
@@ -108,11 +116,13 @@ public class Collections {
      * @param <T> type of function's result
      * @return last result of application
      */
-    public static <T, V> T foldr(Function2<V, T, T> function, T value, Iterable<V> array) {
+    public static @NotNull <T, V> T foldr(@NotNull Function2<? super V, ? super T, ? extends T> function,
+                                          T value, @NotNull Iterable<V> array) {
         return foldr(function, value, array.iterator());
     }
 
-    private static <T, V> T foldr(Function2<V, T, T> function, T value, Iterator<V> iterator ) {
+    private static @NotNull <T, V> T foldr(@NotNull Function2<? super V, ? super T, ? extends T> function,
+                                          T value, @NotNull Iterator<V> iterator ) {
         if (iterator.hasNext()) {
             return function.apply(iterator.next(), foldr(function, value, iterator));
         } else {

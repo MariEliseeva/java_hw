@@ -1,5 +1,7 @@
 package spbau.eliseeva.fp.function;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * This interface is a function of one argument.
  * Classes, which implements it, should override method apply -
@@ -16,7 +18,7 @@ public interface Function1<T, K> {
      * @param value argument
      * @return function value from the given argument
      */
-    K apply(T value);
+     K apply(T value);
 
     /**
      * Makes new function, which is a composition of given and current functions.
@@ -24,7 +26,7 @@ public interface Function1<T, K> {
      * @param <V> result of given (and resulted) function application
      * @return composition of g and a function we call method from
      */
-    default <V> Function1<T, V> compose(Function1<K, V> g) {
+    default @NotNull <V> Function1<T, V> compose(@NotNull Function1<? super K, ? extends V> g) {
         return value -> g.apply(apply(value));
     }
 }

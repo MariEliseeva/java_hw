@@ -73,8 +73,8 @@ public class Function2Test {
                 return value1 * 2 - value2.length();
             }
         }
-        assertEquals(new Integer(47), new MyFunction2().curry().apply("aaa").apply(25));
-        assertEquals(new Integer(25), new MyFunction2().curry().apply("aaccbbdde").apply(17));
+        assertEquals(new Integer(47), new MyFunction2().curry().apply(25).apply("aaa"));
+        assertEquals(new Integer(25), new MyFunction2().curry().apply(17).apply("aaccbbdde"));
     }
 
 }
