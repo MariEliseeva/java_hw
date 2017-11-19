@@ -86,7 +86,7 @@ public class TrieTest {
 
     /**
      * Tests serialization.
-     * Serialize trie and compare it tp expected byte array.
+     * Serialize trie and compare it to expected byte array.
      * @throws IOException thrown if problems with reading or writing to stream
      */
     @Test
@@ -112,7 +112,7 @@ public class TrieTest {
     /**
      * Tests deserialization.
      * Deserialize trie, written in a byte array.
-     * Checks if the size is same as needen and the same elements are in.
+     * Checks if the size is same as needed and the same elements are in.
      * @throws IOException thrown if problems with reading or writing to stream
      */
     @Test
