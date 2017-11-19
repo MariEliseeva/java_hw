@@ -85,26 +85,51 @@ public class TrieTest {
     }
 
     /**
-     * Tests deserialization.
-     * Serialize and then deserialize trie.
-     * Checks if the size is still the same and the same elements are in.
+     * Tests serialization.
+     * Serialize trie and compare it tp expected byte array.
      * @throws IOException thrown if problems with reading or writing to stream
      */
     @Test
-    public void serializeAndDeserializeTest() throws IOException {
+    public void serializeTest() throws IOException {
         Trie trie = new Trie();
-        trie.add("element1");
-        trie.add("element2");
-        trie.add("eleMent1");
+        trie.add("el1");
+        trie.add("el2");
+        trie.add("eL1");
+        trie.add("eL");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         trie.serialize(out);
         byte[] byteArray = out.toByteArray();
-        ByteArrayInputStream in = new ByteArrayInputStream(byteArray);
+        byte[] expectedArray = {'f', 'a', 'l', 's', 'e', '*', '4', '*', 'e', '*',
+                'f', 'a', 'l', 's', 'e', '*', '4', '*', 'l', '*',
+                'f', 'a', 'l', 's', 'e', '*', '2', '*', '1', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', '2', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', '#', 'L', '*',
+                't', 'r', 'u', 'e', '*', '1', '*', '1', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', '#', '#', '#'};
+        assertArrayEquals(expectedArray, byteArray);
+    }
+
+    /**
+     * Tests deserialization.
+     * Deserialize trie, written in a byte array.
+     * Checks if the size is same as needen and the same elements are in.
+     * @throws IOException thrown if problems with reading or writing to stream
+     */
+    @Test
+    public void deserializeTest() throws IOException {
+        byte[] inArray = {'f', 'a', 'l', 's', 'e', '*', '3', '*', 'c', '*',
+                'f', 'a', 'l', 's', 'e', '*', '2', '*', 'a', '*',
+                'f', 'a', 'l', 's', 'e', '*', '2', '*', 't', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', 'r', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', '#', '#', 'a', '*',
+                't', 'r', 'u', 'e', '*', '0', '#', '#'};
+        ByteArrayInputStream in = new ByteArrayInputStream(inArray);
+        Trie trie = new Trie();
         trie.deserialize(in);
         assertEquals(3, trie.size());
-        assertEquals(true, trie.contains("element1"));
-        assertEquals(true, trie.contains("element2"));
-        assertEquals(true, trie.contains("eleMent1"));
-        assertEquals(false, trie.contains("eleMENT"));
+        assertEquals(true, trie.contains("cat"));
+        assertEquals(true, trie.contains("car"));
+        assertEquals(true, trie.contains("a"));
+        assertEquals(false, trie.contains("ac"));
     }
 }

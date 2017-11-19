@@ -2,6 +2,7 @@ package spbau.eliseeva.trie;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class represents Trie data structure, which is used for keeping strings.
@@ -9,7 +10,7 @@ import java.util.HashMap;
  * and a mark - if it is the end of some string or not.
  * The Trie exactly is a root-Vertex.
  */
-public class Trie implements Serializable {
+public class Trie {
     /**
      * Inner class Vertex.
      * Pointers to next Vertices are kept in a HashMap.
@@ -30,6 +31,70 @@ public class Trie implements Serializable {
 
         /** HashMap with keys -- Edges from the Vertex, values -- next Vertices */
         private HashMap<Character, Vertex> next = new HashMap<>();
+
+        /**
+         * Writes string "true" or "false" -- terminal Vertex or not, then
+         * writes string with counter, then for every Vertex in next
+         * writes key and recursively all info about Vertex. Ends with '#',
+         * divide writings by '*'.
+         * @param writer Writer to write
+         * @throws IOException thrown if writing problems
+         */
+        private void serialize(Writer writer) throws IOException {
+            writer.write(String.valueOf(isEnd));
+            writer.write("*");
+            writer.write(String.valueOf(counter));
+            if (next.entrySet().size() != 0) {
+                writer.write("*");
+            }
+            for (Map.Entry<Character, Vertex> e : next.entrySet()) {
+                writer.write(String.valueOf(e.getKey()));
+                writer.write("*");
+                e.getValue().serialize(writer);
+            }
+            writer.write("#");
+        }
+
+        /**
+         * Reads until first '*' and gets ifEnd field,
+         * reads until second '*' and gets counter field,
+         * then read until '#' all info about Vertices
+         * @param reader Reader to read from
+         * @throws IOException thrown if reading problem
+         */
+        private void deserialize(Reader reader) throws IOException {
+            String isEnd = "";
+            int c;
+            for(;;) {
+                c = reader.read();
+                if (c == '*') {
+                    break;
+                }
+                isEnd += (char)c;
+            }
+            this.isEnd = Boolean.parseBoolean(isEnd);
+            String counter = "";
+            for(;;) {
+                c = reader.read();
+                if (c == '*' || c == '#') {
+                    break;
+                }
+                counter += (char)c;
+            }
+            this.counter = Integer.parseInt(counter);
+            if (c == '#') {
+                return;
+            }
+            for(;;) {
+                c = reader.read();
+                if (c == '#') {
+                    return;
+                }
+                reader.read();
+                next.put((char) c, new Vertex());
+                next.get((char) c).deserialize(reader);
+            }
+        }
     }
 
     /** Root of the Trie, Vertex which we start all operations from */
@@ -143,32 +208,26 @@ public class Trie implements Serializable {
     }
 
     /**
-     * Serialize Trie.
+     * Serialize Trie  <=> serialize its root, because
+     * all other vertices are serializing recursively.
      * @param out stream to write.
      * @throws IOException thrown if had problems with writing to OutputStream
      */
     public void serialize(OutputStream out) throws IOException {
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(out);
-        objectOutputStream.writeObject(this);
-        objectOutputStream.close();
+        Writer writer = new OutputStreamWriter(out);
+        root.serialize(writer);
+        writer.close();
     }
 
     /**
-     * Deserialize Trie.
+     * Deserialize Trie  <=> deserialize its root, because
+     * all other vertices are deserializing recursively.
      * @param in stream, which the Trie is taken from.
      * @throws IOException thrown if had problems with reading from InputStream
      */
     public void deserialize(InputStream in) throws IOException {
-        ObjectInputStream objectInputStream = new ObjectInputStream(in);
-        Trie trie = null;
-        try {
-            trie = (Trie) objectInputStream.readObject();
-        } catch (ClassNotFoundException e) {
-            System.out.println("In the inputstream was no trie object, check inputstream.");
-        }
-        if (trie != null) {
-            root = trie.root;
-        }
-        objectInputStream.close();
+        Reader reader = new InputStreamReader(in);
+        root.deserialize(reader);
+        reader.close();
     }
 }
