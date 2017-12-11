@@ -200,11 +200,14 @@ public class Calculator {
      */
     private static int operationPriority(char c) {
         switch (c) {
-            case ')' : return 0;
-            case '-' : return 1;
-            case '+' : return 1;
-            case '*' : return 2;
-            case '/' : return 2;
+            case ')' :
+                return 0;
+            case '-' :
+            case '+' :
+                return 1;
+            case '*' :
+            case '/' :
+                return 2;
         }
         return 3;
     }

@@ -17,9 +17,7 @@ public class CalculatorTest {
         Stack<Integer> mock1 = mock(Stack.class);
         Stack<Character> mock2 = mock(Stack.class);
         String expression = "1 2 19 + 9 3 / - 2 * - ";
-        when(mock1.top()).thenReturn(19).thenReturn(2).thenReturn(3).thenReturn(9)
-        .thenReturn(3).thenReturn(21).thenReturn(2).thenReturn(18).thenReturn(36)
-        .thenReturn(1).thenReturn(-35);
+        when(mock1.top()).thenReturn(19, 2, 3, 9, 3, 21, 2, 18, 36, 1, -35);
         assertEquals(-35, new Calculator(mock1, mock2).evaluate(expression));
         verify(mock1, times(1)).push(1);
         verify(mock1, times(2)).push(2);
@@ -49,15 +47,11 @@ public class CalculatorTest {
         Stack<Integer> mock1 = mock(Stack.class);
         Stack<Character> mock2 = mock(Stack.class);
         String expression = "1-4*(21+3)";
-        when(mock1.top()).thenReturn(1).thenReturn(4).thenReturn(21).thenReturn(3);
-        when(mock2.top()).thenReturn('(').thenReturn('(').thenReturn('-').thenReturn('*')
-        .thenReturn('(').thenReturn('(').thenReturn('+').thenReturn('+').thenReturn('+')
-        .thenReturn('(').thenReturn('(').thenReturn('(').thenReturn('*').thenReturn('*')
-        .thenReturn('*').thenReturn('-').thenReturn('-').thenReturn('-').thenReturn('(')
-        .thenReturn('(').thenReturn('(');
-        when(mock2.isEmpty()).thenReturn(false).thenReturn(false).thenReturn(false)
-                .thenReturn(false).thenReturn(false).thenReturn(false).thenReturn(false)
-                .thenReturn(false).thenReturn(false).thenReturn(true);
+        when(mock1.top()).thenReturn(1, 4, 21, 3);
+        when(mock2.top()).thenReturn('(', '(', '-', '*', '(', '(', '+',
+                '+', '+', '(', '(', '(', '*', '*', '*', '-', '-', '-', '(', '(', '(');
+        when(mock2.isEmpty()).thenReturn(false, false, false, false,
+                false, false, false, false, false, true);
         assertEquals("1 4 21 3 + * - ", new Calculator(mock1, mock2).toPolish(expression));
         verify(mock1, never()).isEmpty();
         verify(mock2, times(10)).isEmpty();
