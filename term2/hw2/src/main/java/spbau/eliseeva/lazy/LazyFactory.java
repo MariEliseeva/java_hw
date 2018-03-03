@@ -14,8 +14,8 @@ public class LazyFactory<T> {
      * @param <T> type of the expression calculated inside the Lazy objects
      * @return one-threaded Lazy object
      */
-    public static <T> Lazy<T> createEasyLazy(Supplier<T> supplier) {
-        return new EasyLazy<>(supplier);
+    public static <T> Lazy<T> createSimpleLazy(Supplier<T> supplier) {
+        return new SimpleLazy<>(supplier);
     }
 
     /**
@@ -24,15 +24,15 @@ public class LazyFactory<T> {
      * @param <T> type of the expression calculated inside the Lazy objects
      * @return multi-threaded Lazy object
      */
-    public static <T> Lazy<T> createHardLazy(Supplier<T> supplier) {
-        return new HardLazy<>(supplier);
+    public static <T> Lazy<T> createMultiThreadedLazy(Supplier<T> supplier) {
+        return new MultiThreadedLazy<>(supplier);
     }
 
     /**
      * The class is a one-threaded Lazy implementation.
      * @param <T> type of the expression calculated inside
      */
-    private static class EasyLazy<T> implements Lazy<T> {
+    private static class SimpleLazy<T> implements Lazy<T> {
         /**
          * supplier to create returned objects, should be called once
          */
@@ -47,7 +47,7 @@ public class LazyFactory<T> {
          * Creates an object by the given supplier.
          * @param supplier supplier to create an object from
          */
-        EasyLazy(Supplier<T> supplier) {
+        SimpleLazy(Supplier<T> supplier) {
             this.supplier = supplier;
         }
 
@@ -70,7 +70,7 @@ public class LazyFactory<T> {
      * The class is a multi-threaded Lazy implementation.
      * @param <T> type of the expression calculated inside
      */
-    private static class HardLazy<T> implements Lazy<T> {
+    private static class MultiThreadedLazy<T> implements Lazy<T> {
         /**
          * supplier to create returned objects, should be called once
          */
@@ -85,7 +85,7 @@ public class LazyFactory<T> {
          * Creates an object by the given supplier.
          * @param supplier supplier to create an object from
          */
-        HardLazy(Supplier<T> supplier) {
+        MultiThreadedLazy(Supplier<T> supplier) {
             this.supplier = supplier;
         }
 

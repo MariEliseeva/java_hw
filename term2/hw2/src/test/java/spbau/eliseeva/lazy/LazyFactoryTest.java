@@ -19,7 +19,7 @@ public class LazyFactoryTest {
      */
     @Test
     public void TestCallSupplier() {
-        Lazy<String> lazy = LazyFactory.createEasyLazy(() -> "AAA");
+        Lazy<String> lazy = LazyFactory.createSimpleLazy(() -> "AAA");
         assertEquals("AAA", lazy.get());
         assertEquals("AAA", lazy.get());
     }
@@ -29,7 +29,7 @@ public class LazyFactoryTest {
      */
     @Test
     public void TestNullReturningSupplier() {
-        Lazy<String> lazy = LazyFactory.createEasyLazy(() -> null);
+        Lazy<String> lazy = LazyFactory.createSimpleLazy(() -> null);
         assertNull(lazy.get());
     }
 
@@ -38,7 +38,7 @@ public class LazyFactoryTest {
      */
     @Test
     public void TestNullSupplier() {
-        Lazy<String> lazy = LazyFactory.createEasyLazy(null);
+        Lazy<String> lazy = LazyFactory.createSimpleLazy(null);
         assertNull(lazy.get());
     }
 
@@ -49,7 +49,7 @@ public class LazyFactoryTest {
     @Test
     public void TestNoSupplierCalls() {
         supplierCalls = 0;
-        LazyFactory.createEasyLazy(() -> {
+        LazyFactory.createSimpleLazy(() -> {
             supplierCalls++;
             return "AAA";
         });
@@ -62,7 +62,7 @@ public class LazyFactoryTest {
     @Test
     public void TestManySupplierCalls() {
         supplierCalls = 0;
-        Lazy<String> lazy = LazyFactory.createEasyLazy(() -> {
+        Lazy<String> lazy = LazyFactory.createSimpleLazy(() -> {
             supplierCalls++;
             return "AAA";
         });
@@ -75,10 +75,11 @@ public class LazyFactoryTest {
     /**
      * Checks if the supplier is called once even from different threads
      * and with sleeping inside of the supplier.
+     * @throws InterruptedException thrown when something with threads goes wrong
      */
     @Test
-    public void TestCallOnceFromManyThreads() {
-        Lazy<String> lazy = LazyFactory.createHardLazy(() -> {
+    public void TestCallOnceFromManyThreads() throws InterruptedException {
+        Lazy<String> lazy = LazyFactory.createMultiThreadedLazy(() -> {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ignored) {
@@ -96,10 +97,7 @@ public class LazyFactoryTest {
             thread.start();
         }
         for (Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException ignored) {
-            }
+            thread.join();
         }
         assertEquals(1, supplierCalls);
         for (String result : results) {
