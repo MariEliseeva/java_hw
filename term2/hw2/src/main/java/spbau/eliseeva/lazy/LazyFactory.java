@@ -33,14 +33,10 @@ public class LazyFactory<T> {
      * @param <T> type of the expression calculated inside
      */
     private static class SimpleLazy<T> implements Lazy<T> {
-        /**
-         * supplier to create returned objects, should be called once
-         */
+        /** supplier to create returned objects, should be called once*/
         private Supplier<T> supplier;
 
-        /**
-         * The result of the supplier calling.
-         */
+        /** The result of the supplier calling.*/
         private T value;
 
         /**
@@ -71,14 +67,10 @@ public class LazyFactory<T> {
      * @param <T> type of the expression calculated inside
      */
     private static class MultiThreadedLazy<T> implements Lazy<T> {
-        /**
-         * supplier to create returned objects, should be called once
-         */
-        private Supplier <T> supplier;
+        /** Supplier to create returned objects, should be called once.*/
+        private volatile Supplier <T> supplier;
 
-        /**
-         * The result of the supplier calling.
-         */
+        /** The result of the supplier calling.*/
         private T value;
 
         /**

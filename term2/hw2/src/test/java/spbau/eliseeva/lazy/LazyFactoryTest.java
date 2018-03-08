@@ -9,14 +9,10 @@ import static org.junit.Assert.*;
  * two types of the Lazy objects.
  */
 public class LazyFactoryTest {
-    /**
-     * We need to know how many times did we call the supplier in our tests.
-     */
+    /** We need to know how many times did we call the supplier in our tests.*/
     private int supplierCalls;
 
-    /**
-     * Checks if the supplier works correct even two times without breaking.
-     */
+    /** Checks if the supplier works correct even two times without breaking.*/
     @Test
     public void TestCallSupplier() {
         Lazy<String> lazy = LazyFactory.createSimpleLazy(() -> "AAA");
@@ -24,18 +20,14 @@ public class LazyFactoryTest {
         assertEquals("AAA", lazy.get());
     }
 
-    /**
-     * Checks if everything works as expected with null-returning supplier.
-     */
+    /** Checks if everything works as expected with null-returning supplier.*/
     @Test
     public void TestNullReturningSupplier() {
         Lazy<String> lazy = LazyFactory.createSimpleLazy(() -> null);
         assertNull(lazy.get());
     }
 
-    /**
-     * Checks if null-supplier do not break everything.
-     */
+    /** Checks if null-supplier do not break everything.*/
     @Test
     public void TestNullSupplier() {
         Lazy<String> lazy = LazyFactory.createSimpleLazy(null);
@@ -56,9 +48,7 @@ public class LazyFactoryTest {
         assertEquals(0, supplierCalls);
     }
 
-    /**
-     * Checks that the supplier is called only once.
-     */
+    /** Checks that the supplier is called only once.*/
     @Test
     public void TestManySupplierCalls() {
         supplierCalls = 0;
