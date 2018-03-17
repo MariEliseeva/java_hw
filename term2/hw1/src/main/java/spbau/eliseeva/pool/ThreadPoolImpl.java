@@ -101,6 +101,9 @@ public class ThreadPoolImpl<R> {
         /** Was it thrown an exception or not.*/
         private boolean isException;
 
+        /** An exception that was thrown.*/
+        private Exception exception;
+
         /**
          * Creates a task by given Supplier.
          * @param task supplier to run inside.
@@ -130,6 +133,7 @@ public class ThreadPoolImpl<R> {
                             result = task.get();
                         } catch (Exception e) {
                             isException = true;
+                            exception = e;
                         }
                     }
                     notifyAll();
@@ -156,7 +160,7 @@ public class ThreadPoolImpl<R> {
                 System.out.println(e.getMessage());
             }
             if (isException) {
-                throw new LightExecutionException();
+                throw new LightExecutionException(exception);
             }
 
             return result;
