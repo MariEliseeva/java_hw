@@ -104,7 +104,7 @@ public class GameController {
             return;
         }
         if (mode != 0 && !isBot) {
-            go(new BotLogic().go(gameLogic, turn, mode), true);
+            go(BotLogic.go(gameLogic, turn, mode), true);
         }
     }
 
@@ -180,8 +180,7 @@ public class GameController {
         }
         if (nameX.equals("PC")) {
             who.setText("O goes");
-            turn = 'O';
-            go(new BotLogic().go(gameLogic, turn, mode), true);
+            go(BotLogic.go(gameLogic, turn, mode), true);
         } else {
             who.setText("X goes");
         }
