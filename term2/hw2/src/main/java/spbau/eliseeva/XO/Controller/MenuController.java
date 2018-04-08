@@ -2,6 +2,7 @@ package spbau.eliseeva.XO.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.stage.Stage;
 import spbau.eliseeva.XO.Util.FXMLLoaderCreator;
 
 /**
@@ -13,34 +14,36 @@ public class MenuController {
 
     /** Button to play with friend when clicked.*/
     @FXML
-    Button button_friend;
+    Button buttonFriend;
 
     /** Buttons to play with PC (two different levels) when clicked.*/
     @FXML
-    Button button_pc_easy;
+    Button buttonPCEasy;
     @FXML
-    Button button_pc_hard;
+    Button buttonPCHard;
 
     /** Button to see the previous games results.*/
     @FXML
-    Button button_statistics;
+    Button buttonStatistics;
 
     /** Gives the needed tasks to all the buttons: to open the needed window.*/
     @FXML
     public void initialize(){
-        button_friend.setOnMouseClicked((event) ->
-                FXMLLoaderCreator.load("names.fxml", "Text your name."));
-        button_pc_easy.setOnMouseClicked((event) -> {
+        buttonFriend.setOnMouseClicked((event) ->
+                FXMLLoaderCreator.load("names.fxml", "Text your name.",
+                        (Stage) buttonFriend.getScene().getWindow()));
+        buttonPCEasy.setOnMouseClicked((event) -> {
             NameController controller = FXMLLoaderCreator.load("name.fxml",
-                    "Text your names.").getController();
+                    "Text your names.", (Stage) buttonFriend.getScene().getWindow()).getController();
             controller.mode(1);
         });
-        button_pc_hard.setOnMouseClicked((event) -> {
+        buttonPCHard.setOnMouseClicked((event) -> {
             NameController controller = FXMLLoaderCreator.load("name.fxml",
-                    "Text your names.").getController();
+                    "Text your names.", (Stage) buttonFriend.getScene().getWindow()).getController();
             controller.mode(2);
         });
-        button_statistics.setOnMouseClicked((event) ->
-                FXMLLoaderCreator.load("statistics.fxml", "Previous games."));
+        buttonStatistics.setOnMouseClicked((event) ->
+                FXMLLoaderCreator.load("statistics.fxml", "Previous games.",
+                        (Stage) buttonFriend.getScene().getWindow()));
     }
 }

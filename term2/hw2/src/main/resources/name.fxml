@@ -24,14 +24,14 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-    <Button fx:id="button_play" mnemonicParsing="false"
+    <Button fx:id="buttonPlay" mnemonicParsing="false"
             prefHeight="75.0" prefWidth="150.0"
             text="Play!" textFill="#0047ff" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <font>
             <Font size="36.0"/>
         </font>
     </Button>
-    <TextField fx:id="text_name" prefHeight="50.0" prefWidth="150.0"
+    <TextField fx:id="textName" prefHeight="50.0" prefWidth="150.0"
                GridPane.columnIndex="1" GridPane.rowIndex="1">
         <font>
             <Font size="36.0"/>
@@ -43,14 +43,14 @@
             <Font size="44.0"/>
         </font>
     </Text>
-    <Text fx:id="text_user" fill="#278c16" strokeType="OUTSIDE"
+    <Text fx:id="textUser" fill="#278c16" strokeType="OUTSIDE"
           strokeWidth="0.0" text="X:" textAlignment="CENTER"
           wrappingWidth="150.0" GridPane.rowIndex="1">
         <font>
             <Font size="48.0"/>
         </font>
     </Text>
-    <Text fx:id="text_pc" fill="#ff0035" strokeType="OUTSIDE"
+    <Text fx:id="textPC" fill="#ff0035" strokeType="OUTSIDE"
           strokeWidth="0.0" text="O:" textAlignment="CENTER"
           wrappingWidth="150.0" GridPane.rowIndex="2">
         <font>

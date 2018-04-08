@@ -18,14 +18,14 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-    <Button fx:id="button_close" mnemonicParsing="false"
+    <Button fx:id="buttonClose" mnemonicParsing="false"
             prefHeight="100.0" prefWidth="300.0" text="Close"
             textFill="#0047ff" GridPane.rowIndex="2">
         <font>
           <Font size="36.0"/>
         </font>
     </Button>
-    <Text fx:id="text_who_won" fill="#0047ff"
+    <Text fx:id="textWhoWon" fill="#0047ff"
           strokeType="OUTSIDE" strokeWidth="0.0"
           textAlignment="CENTER" wrappingWidth="300.0" GridPane.rowIndex="1">
         <font>

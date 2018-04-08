@@ -21,28 +21,28 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
-    <Button fx:id="button_friend" mnemonicParsing="false"
+    <Button fx:id="buttonFriend" mnemonicParsing="false"
             prefHeight="75.0" prefWidth="300.0"
             text="play with friend" textFill="#0047ff">
         <font>
             <Font size="24.0"/>
         </font>
     </Button>
-    <Button fx:id="button_statistics" cache="true" mnemonicParsing="false"
+    <Button fx:id="buttonStatistics" cache="true" mnemonicParsing="false"
             prefHeight="75.0" prefWidth="300.0"
             text="statistics" textFill="#0047ff" GridPane.rowIndex="3">
         <font>
             <Font size="24.0"/>
         </font>
     </Button>
-    <Button fx:id="button_pc_easy" mnemonicParsing="false"
+    <Button fx:id="buttonPCEasy" mnemonicParsing="false"
             prefHeight="75.0" prefWidth="300.0"
             text="play with PC: easy" textFill="#0047ff" GridPane.rowIndex="1">
         <font>
             <Font size="24.0"/>
         </font>
     </Button>
-    <Button fx:id="button_pc_hard" mnemonicParsing="false"
+    <Button fx:id="buttonPCHard" mnemonicParsing="false"
             prefHeight="75.0" prefWidth="300.0"
             text="play with PC: hard" textFill="#0047ff" GridPane.rowIndex="2">
         <font>

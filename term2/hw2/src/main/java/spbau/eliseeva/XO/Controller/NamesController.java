@@ -14,25 +14,23 @@ import spbau.eliseeva.XO.Util.FXMLLoaderCreator;
 public class NamesController {
     /** Button which starts the game when clicked.*/
     @FXML
-    Button button_play;
+    Button buttonPlay;
 
     /** The text field with the X player name.*/
     @FXML
-    TextField text_x;
+    TextField textX;
 
     /** The text field with the O player name.*/
     @FXML
-    TextField text_o;
+    TextField textO;
 
     /** Starts the game with two players.*/
     @FXML
     public void initialize(){
-        button_play.setOnMouseClicked((event) -> {
+        buttonPlay.setOnMouseClicked((event) -> {
             GameController controller = FXMLLoaderCreator.load("game.fxml",
-                    "Game").getController();
-            controller.init(0, text_x.getText(), text_o.getText());
-            Stage stageCurrent = (Stage) button_play.getScene().getWindow();
-            stageCurrent.close();
+                    "Game", (Stage) buttonPlay.getScene().getWindow()).getController();
+            controller.init(0, textX.getText(), textO.getText());
         });
     }
 }

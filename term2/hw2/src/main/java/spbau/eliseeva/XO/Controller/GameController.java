@@ -1,15 +1,13 @@
 package spbau.eliseeva.XO.Controller;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import spbau.eliseeva.XO.Util.BotLogic;
-import spbau.eliseeva.XO.Util.FXMLLoaderCreator;
-import spbau.eliseeva.XO.Util.GameLogic;
-import spbau.eliseeva.XO.Util.StatisticsReaderWriter;
+import javafx.util.Duration;
+import spbau.eliseeva.XO.Util.*;
 
-import java.util.ArrayList;
 
 /**
  * This class is a controller for the "game.fxml" file. It looks for the game
@@ -50,31 +48,48 @@ public class GameController {
     private String nameO;
 
     /** An object, that controls the game and its results.*/
-    private final GameLogic gameLogic = new GameLogic();
+    private final GameLogic gameLogic = new GameLogic(3);
 
     /** Who is going now: X ot O. X are always first. */
     private char turn = 'X';
 
     /**
-     * Opens the new window and sends to it the game results.
-     * @param winText text with an information about the game results
-     * @param statisticsText text which should be written in the game statistics, to watch later
+     * Blocks all buttons and open results.
+     * @param winText information about results
+     * @param isXWon true if X won
+     * @param isDraw true if draw
      */
-    private void end(String winText, String statisticsText) {
-        EndController controller = FXMLLoaderCreator.load("end.fxml", winText).getController();
-        controller.setText(winText, (Stage) button00.getScene().getWindow());
-        updateStatistics(statisticsText);
+    private void end(String winText, boolean isXWon, boolean isDraw) {
+        button00.setDisable(true);
+        button01.setDisable(true);
+        button02.setDisable(true);
+        button10.setDisable(true);
+        button11.setDisable(true);
+        button12.setDisable(true);
+        button20.setDisable(true);
+        button21.setDisable(true);
+        button22.setDisable(true);
+        PauseTransition delay = new PauseTransition(Duration.seconds(2));
+        delay.setOnFinished( event -> {
+            EndController controller = FXMLLoaderCreator.load("end.fxml", winText,
+                    (Stage) button00.getScene().getWindow()).getController();
+            controller.setText(winText);
+            updateStatistics(isXWon, isDraw);
+        });
+        delay.play();
     }
 
     /**
-     * Whites the current game results in the begin of the file, saving the statistics.
-     * @param winText information about the results.
+     * Remembers statistics.
+     * @param isXWon true is X won
+     * @param isDraw true is draw
      */
-    private void updateStatistics(String winText) {
-        ArrayList<String> results = new ArrayList<>();
-        results.add(nameX + " vs " + nameO + ": " + winText);
-        results.addAll(StatisticsReaderWriter.read());
-        StatisticsReaderWriter.write(results);
+    private void updateStatistics(boolean isXWon, boolean isDraw) {
+        if (isXWon) {
+            Information.setStatistic(nameX, nameO, isDraw);
+        } else {
+            Information.setStatistic(nameO, nameX, isDraw);
+        }
     }
 
     /**
@@ -92,19 +107,23 @@ public class GameController {
             who.setText("X goes");
         }
         if (gameLogic.isWin('X')) {
-            end(nameX + " wins!", nameX + " won.");
+            end(nameX + " wins!", true, false);
             return;
         }
         if (gameLogic.isWin('O')) {
-            end(nameO + " wins!", nameO + " won.");
+            end(nameO + " wins!", false, false);
             return;
         }
         if (gameLogic.isDraw()) {
-            end("Draw.", "Draw.");
+            end("Draw.", false, true);
             return;
         }
         if (mode != 0 && !isBot) {
-            go(BotLogic.go(gameLogic, turn, mode), true);
+            if (mode == 1) {
+                go(EasyBotLogic.go(gameLogic), true);
+            } else {
+                go(HardBotLogic.go(gameLogic, turn), true);
+            }
         }
     }
 
@@ -178,9 +197,13 @@ public class GameController {
         } else {
             nameO = n2;
         }
-        if (nameX.equals("PC")) {
+        if (nameX.equals("PC-easy") || nameX.equals("PC-hard")) {
             who.setText("O goes");
-            go(BotLogic.go(gameLogic, turn, mode), true);
+            if (mode == 1) {
+                go(EasyBotLogic.go(gameLogic), true);
+            } else {
+                go(HardBotLogic.go(gameLogic, turn), true);
+            }
         } else {
             who.setText("X goes");
         }

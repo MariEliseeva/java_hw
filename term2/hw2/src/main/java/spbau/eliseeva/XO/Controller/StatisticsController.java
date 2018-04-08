@@ -1,12 +1,12 @@
 package spbau.eliseeva.XO.Controller;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import spbau.eliseeva.XO.Util.StatisticsReaderWriter;
-
-import java.util.ArrayList;
+import javafx.stage.Stage;
+import spbau.eliseeva.XO.Util.FXMLLoaderCreator;
+import spbau.eliseeva.XO.Util.Information;
 
 /**
  * This class is a controller for the "statistics.fxml" file. This window is
@@ -15,13 +15,17 @@ import java.util.ArrayList;
 public class StatisticsController {
     /** The list with the ended games.*/
     @FXML
-    ListView<String> list_results;
+    ListView<String> listResults;
+
+    /** Button to close the e statistics.*/
+    @FXML
+    Button closeButton;
 
     /** Shows the list with the ended games.*/
     @FXML
     public void initialize() {
-        ArrayList<String> readLines = StatisticsReaderWriter.read();
-        ObservableList<String> lines = FXCollections.observableArrayList(readLines);
-        list_results.setItems(lines);
+        listResults.setItems(FXCollections.observableArrayList(Information.getStatistics()));
+        closeButton.setOnMouseClicked(event -> FXMLLoaderCreator.load("menu.fxml", "Menu",
+                (Stage) closeButton.getScene().getWindow()));
     }
 }

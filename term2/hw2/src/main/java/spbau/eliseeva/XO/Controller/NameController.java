@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import spbau.eliseeva.XO.Util.FXMLLoaderCreator;
+import spbau.eliseeva.XO.Util.Information;
 
 import java.util.Random;
 
@@ -19,19 +20,19 @@ import java.util.Random;
 public class NameController {
     /** Button which starts the game when clicked.*/
     @FXML
-    Button button_play;
+    Button buttonPlay;
 
     /** A text field to write a user name to.*/
     @FXML
-    TextField text_name;
+    TextField textName;
 
     /** A text where written what the user will be playing for: X ot O. */
     @FXML
-    Text text_user;
+    Text textUser;
 
     /** A text where written what the PC will be playing for: X ot O. */
     @FXML
-    Text text_pc;
+    Text textPC;
 
     /** 1 if we are playing easy, 2 if hard.*/
     private int mode;
@@ -53,28 +54,32 @@ public class NameController {
     public void initialize(){
         int PCNumber = new Random().nextInt(2);
         if (PCNumber == 0) {
-            text_user.setText("O");
-            text_user.setFill(Color.valueOf("#ff0035"));
-            text_pc.setText("X");
-            text_pc.setFill(Color.valueOf("#278c16"));
+            textUser.setText("O");
+            textUser.setFill(Color.valueOf(Information.RED));
+            textPC.setText("X");
+            textPC.setFill(Color.valueOf(Information.GREEN));
 
         } else {
-            text_user.setText("X");
-            text_user.setFill(Color.valueOf("#278c16"));
-            text_pc.setText("O");
-            text_pc.setFill(Color.valueOf("#ff0035"));
+            textUser.setText("X");
+            textUser.setFill(Color.valueOf(Information.GREEN));
+            textPC.setText("O");
+            textPC.setFill(Color.valueOf(Information.RED));
 
         }
-        button_play.setOnMouseClicked((event) -> {
+        buttonPlay.setOnMouseClicked((event) -> {
             GameController controller = FXMLLoaderCreator.load("game.fxml",
-                    "Game").getController();
-            if (PCNumber == 0) {
-                controller.init(mode, "PC", text_name.getText());
+                    "Game", (Stage) buttonPlay.getScene().getWindow()).getController();
+            String PCName;
+            if (mode == 1) {
+                PCName = "PC-easy";
             } else {
-                controller.init( mode, text_name.getText(), "PC");
+                PCName = "PC-hard";
             }
-            Stage stageCurrent = (Stage) button_play.getScene().getWindow();
-            stageCurrent.close();
+            if (PCNumber == 0) {
+                controller.init(mode, PCName, textName.getText());
+            } else {
+                controller.init( mode, textName.getText(), PCName);
+            }
         });
     }
 }

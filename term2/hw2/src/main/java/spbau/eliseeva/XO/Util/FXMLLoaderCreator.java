@@ -16,7 +16,7 @@ public class FXMLLoaderCreator {
      * @param title title of the new window
      * @return FXMLLoader for next actions (like calling the controller)
      */
-    public static FXMLLoader load(String fileName, String title) {
+    public static FXMLLoader load(String fileName, String title, Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader();
         try {
             fxmlLoader.setLocation(new File("src/main/resources/" + fileName).toURI().toURL());
@@ -29,7 +29,6 @@ public class FXMLLoaderCreator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Stage stage = new Stage();
         stage.setTitle(title);
         stage.setScene(scene);
         stage.show();
