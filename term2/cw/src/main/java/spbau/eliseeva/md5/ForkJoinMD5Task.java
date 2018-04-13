@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RecursiveTask;
 
+/** The class implements the recursive task for calculating MD5 code in multi-threaded mode.*/
 public class ForkJoinMD5Task extends RecursiveTask<Byte []> {
     private final File file;
     private final MessageDigest messageDigest;
