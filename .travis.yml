@@ -4,5 +4,4 @@ os: linux
 env:
   - PROJECT_DIR=term2/hw2
   - PROJECT_DIR=term2/hw1
-  - PROJECT_DIR=term2/cw
 script: cd $PROJECT_DIR && ./gradlew check
