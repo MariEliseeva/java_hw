@@ -29,6 +29,10 @@ public class MenuController {
     /** Gives the needed tasks to all the buttons: to open the needed window.*/
     @FXML
     public void initialize(){
+        buttonFriend.setFocusTraversable(false);
+        buttonPCEasy.setFocusTraversable(false);
+        buttonPCHard.setFocusTraversable(false);
+        buttonStatistics.setFocusTraversable(false);
         buttonFriend.setOnMouseClicked((event) ->
                 FXMLLoaderCreator.load("names.fxml", "Text your name.",
                         (Stage) buttonFriend.getScene().getWindow()));

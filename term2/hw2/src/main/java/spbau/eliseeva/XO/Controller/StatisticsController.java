@@ -27,5 +27,6 @@ public class StatisticsController {
         listResults.setItems(FXCollections.observableArrayList(Information.getStatistics()));
         closeButton.setOnMouseClicked(event -> FXMLLoaderCreator.load("menu.fxml", "Menu",
                 (Stage) closeButton.getScene().getWindow()));
+        closeButton.setFocusTraversable(false);
     }
 }

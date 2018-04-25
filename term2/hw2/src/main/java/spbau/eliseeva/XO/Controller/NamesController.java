@@ -32,5 +32,6 @@ public class NamesController {
                     "Game", (Stage) buttonPlay.getScene().getWindow()).getController();
             controller.init(0, textX.getText(), textO.getText());
         });
+        buttonPlay.setFocusTraversable(false);
     }
 }

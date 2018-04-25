@@ -52,6 +52,7 @@ public class NameController {
      */
     @FXML
     public void initialize(){
+        buttonPlay.setFocusTraversable(false);
         int PCNumber = new Random().nextInt(2);
         if (PCNumber == 0) {
             textUser.setText("O");

@@ -31,5 +31,7 @@ public class EndController {
         textWhoWon.setText(text);
         buttonClose.setOnMouseClicked(mouseEvent -> FXMLLoaderCreator.load("menu.fxml", "Menu",
                 (Stage) buttonClose.getScene().getWindow()));
+        buttonClose.setFocusTraversable(false);
+
     }
 }

@@ -208,13 +208,22 @@ public class GameController {
             who.setText("X goes");
         }
         button00.setOnMouseClicked(mouseEvent -> go(0, false));
+        button00.setFocusTraversable(false);
         button01.setOnMouseClicked(mouseEvent -> go(1, false));
+        button01.setFocusTraversable(false);
         button02.setOnMouseClicked(mouseEvent -> go(2, false));
+        button02.setFocusTraversable(false);
         button10.setOnMouseClicked(mouseEvent -> go(3, false));
+        button10.setFocusTraversable(false);
         button11.setOnMouseClicked(mouseEvent -> go(4, false));
+        button11.setFocusTraversable(false);
         button12.setOnMouseClicked(mouseEvent -> go(5, false));
+        button12.setFocusTraversable(false);
         button20.setOnMouseClicked(mouseEvent -> go(6, false));
+        button20.setFocusTraversable(false);
         button21.setOnMouseClicked(mouseEvent -> go(7, false));
+        button21.setFocusTraversable(false);
         button22.setOnMouseClicked(mouseEvent -> go(8, false));
+        button22.setFocusTraversable(false);
     }
 }

@@ -1,5 +1,6 @@
 package spbau.eliseeva.XO.Util;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -27,7 +28,7 @@ public class FXMLLoaderCreator {
         try {
             scene = new Scene(fxmlLoader.load(), 300, 300);
         } catch (IOException e) {
-            e.printStackTrace();
+            Platform.exit();
         }
         stage.setTitle(title);
         stage.setScene(scene);
