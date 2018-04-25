@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import spbau.eliseeva.XO.Util.*;
 
+import java.util.ArrayList;
+
 
 /**
  * This class is a controller for the "game.fxml" file. It looks for the game
@@ -33,6 +35,11 @@ public class GameController {
     Button button21;
     @FXML
     Button button22;
+
+    /**
+     * An ArrayList with buttons from game board.
+     */
+    private ArrayList<Button> buttonArrayList;
 
     /** A text, giving an information about who should go: X or O.*/
     @FXML
@@ -60,15 +67,9 @@ public class GameController {
      * @param isDraw true if draw
      */
     private void end(String winText, boolean isXWon, boolean isDraw) {
-        button00.setDisable(true);
-        button01.setDisable(true);
-        button02.setDisable(true);
-        button10.setDisable(true);
-        button11.setDisable(true);
-        button12.setDisable(true);
-        button20.setDisable(true);
-        button21.setDisable(true);
-        button22.setDisable(true);
+        for (Button button : buttonArrayList) {
+            button.setDisable(true);
+        }
         PauseTransition delay = new PauseTransition(Duration.seconds(2));
         delay.setOnFinished( event -> {
             EndController controller = FXMLLoaderCreator.load("end.fxml", winText,
@@ -144,28 +145,7 @@ public class GameController {
      * @param index the number of a cell to move (all cells are given a number from 0 to 8)
      */
     private void updateButton(int index) {
-        Button button = null;
-        switch (index) {
-            case 0: button = button00;
-                    break;
-            case 1: button = button01;
-                    break;
-            case 2: button = button02;
-                    break;
-            case 3: button = button10;
-                    break;
-            case 4: button = button11;
-                    break;
-            case 5: button = button12;
-                    break;
-            case 6: button = button20;
-                    break;
-            case 7: button = button21;
-                    break;
-            case 8: button = button22;
-                    break;
-        }
-        assert button != null;
+        Button button = buttonArrayList.get(index);
         if (!button.isDisabled()) {
             if (gameLogic.getCell(index / 3, index % 3) == 'X') {
                 button.setText("X");
@@ -207,23 +187,20 @@ public class GameController {
         } else {
             who.setText("X goes");
         }
-        button00.setOnMouseClicked(mouseEvent -> go(0, false));
-        button00.setFocusTraversable(false);
-        button01.setOnMouseClicked(mouseEvent -> go(1, false));
-        button01.setFocusTraversable(false);
-        button02.setOnMouseClicked(mouseEvent -> go(2, false));
-        button02.setFocusTraversable(false);
-        button10.setOnMouseClicked(mouseEvent -> go(3, false));
-        button10.setFocusTraversable(false);
-        button11.setOnMouseClicked(mouseEvent -> go(4, false));
-        button11.setFocusTraversable(false);
-        button12.setOnMouseClicked(mouseEvent -> go(5, false));
-        button12.setFocusTraversable(false);
-        button20.setOnMouseClicked(mouseEvent -> go(6, false));
-        button20.setFocusTraversable(false);
-        button21.setOnMouseClicked(mouseEvent -> go(7, false));
-        button21.setFocusTraversable(false);
-        button22.setOnMouseClicked(mouseEvent -> go(8, false));
-        button22.setFocusTraversable(false);
+        buttonArrayList = new ArrayList<>();
+        buttonArrayList.add(button00);
+        buttonArrayList.add(button01);
+        buttonArrayList.add(button02);
+        buttonArrayList.add(button10);
+        buttonArrayList.add(button11);
+        buttonArrayList.add(button12);
+        buttonArrayList.add(button20);
+        buttonArrayList.add(button21);
+        buttonArrayList.add(button22);
+        for (int j = 0; j < buttonArrayList.size(); j++) {
+            int index = j;
+            buttonArrayList.get(j).setOnMouseClicked(mouseEvent -> go(index, false));
+            buttonArrayList.get(j).setFocusTraversable(false);
+        }
     }
 }

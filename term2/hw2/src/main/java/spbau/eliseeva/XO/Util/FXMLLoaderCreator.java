@@ -22,7 +22,7 @@ public class FXMLLoaderCreator {
         try {
             fxmlLoader.setLocation(new File("src/main/resources/" + fileName).toURI().toURL());
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Platform.exit();
         }
         Scene scene = null;
         try {
