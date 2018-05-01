@@ -3,36 +3,33 @@ package spbau.eliseeva.ftp;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class FTPClient {
     public static void main(String[] args) {
-        String hostName = args[0];
-        int portNumber = Integer.parseInt(args[1]);
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Write host name.\n");
+        String hostName = scanner.nextLine();
+        System.out.print("Write port number.\n");
+        int portNumber = Integer.parseInt(scanner.nextLine());
 
-        try (
-                Socket socket = new Socket(hostName, portNumber);
+        Socket socket = null;
+        String fromUser = scanner.nextLine();
+        while (!fromUser.equals("exit")) {
+            try {
+                socket = new Socket(InetAddress.getByName(hostName), portNumber);
                 DataInputStream in = new DataInputStream(socket.getInputStream());
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                Scanner scanner = new Scanner(System.in)
-
-        ) {
-            String fromServer;
-            String fromUser;
-
-            while ((fromServer = in.readUTF()) != null) {
+                out.writeUTF(fromUser);
+                out.flush();
+                String fromServer = in.readUTF();
                 System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye."))
-                    break;
-
-                fromUser = scanner.nextLine();
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.writeUTF(fromUser);
-                }
+                fromUser = (new Scanner(System.in)).nextLine();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
         }
     }
 }
