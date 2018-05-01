@@ -18,7 +18,7 @@ public class FTPTest {
     public void test2() throws InterruptedException {
         runServer();
         InputStream clientInputStream = new ByteArrayInputStream(("localhost\n1234\n1 src/test/resources/dir1\nexit\n").getBytes());
-        assertArrayEquals(("Write host name.\nWrite port number.\nconnected\n3 (dir2 true)(dir5 true)(dir4 true)\n").getBytes(),
+        assertArrayEquals(("Write host name.\nWrite port number.\nconnected\n3 (dir2 true)(dir4 true)(dir5 true)\n").getBytes(),
                 runClient(clientInputStream).toByteArray());
     }
 
