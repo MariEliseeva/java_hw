@@ -30,6 +30,7 @@ public class FTPClient {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             if (fromUser.charAt(0) != '1' && fromUser.charAt(0) != '2') {
                 System.out.println("Wrong command.");
+                fromUser = scanner.nextLine();
                 continue;
             }
             out.writeInt(fromUser.charAt(0) - '0');
@@ -40,6 +41,7 @@ public class FTPClient {
             } else if (fromUser.charAt(0) == '2') {
                 listAnswer(in);
             }
+            System.out.println();
             fromUser = scanner.nextLine();
         }
     }
@@ -53,7 +55,6 @@ public class FTPClient {
             System.out.print(in.readBoolean());
             System.out.print(')');
         }
-        System.out.println();
     }
 
     private static void listAnswer(DataInputStream in) throws IOException {
@@ -63,11 +64,10 @@ public class FTPClient {
             System.out.print(' ');
             int c;
             byte[] buffer = new byte[1024];
-            while ((c = in.read(buffer)) != -1) {
+            while ((c = in.read(buffer)) == 1024) {
                 System.out.write(buffer, 0, c);
             }
-        } else {
-            System.out.println();
+            System.out.write(buffer, 0, c);
         }
     }
 

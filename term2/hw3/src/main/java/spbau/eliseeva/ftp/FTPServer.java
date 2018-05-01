@@ -50,10 +50,13 @@ public class FTPServer {
             switch (command) {
                 case 1:
                     list(dataInputStream.readUTF(), dataOutputStream);
+                    break;
                 case 2:
                     get(dataInputStream.readUTF(), dataOutputStream);
+                    break;
                 case 17:
                     dataOutputStream.writeUTF("connected");
+                    break;
                 default:
                     dataOutputStream.writeUTF("wrong command.");
             }
@@ -74,16 +77,18 @@ public class FTPServer {
         int size = 0;
         int length;
         byte[] buffer = new byte[1024];
-        while ((length = fileInputStream.read(buffer)) != -1) {
+        while ((length = fileInputStream.read(buffer)) == 1024) {
             size += length;
         }
+        size += length;
         dataOutputStream.writeLong(size);
         fileInputStream.close();
         fileInputStream = new FileInputStream(fileName);
         int c;
-        while ((c = fileInputStream.read(buffer)) != -1) {
+        while ((c = fileInputStream.read(buffer)) == 1024) {
             dataOutputStream.write(buffer, 0, c);
         }
+        dataOutputStream.write(buffer, 0, c);
         fileInputStream.close();
     }
 
