@@ -21,7 +21,7 @@ public class FTPClient {
         int portNumber = Integer.parseInt(scanner.nextLine());
         try {
             checkConnection(hostName, portNumber);
-            communicateWithServer(hostName, portNumber);
+            communicateWithServer(scanner, hostName, portNumber);
         } catch (IOException e) {
             System.err.println("Problems with connection or reading and writing.");
         }
@@ -29,12 +29,12 @@ public class FTPClient {
 
     /**
      * While user has not printed "exit" waits for new command and sends requests to server.
+     * @param scanner System.in^ to read from
      * @param hostName name of host
      * @param portNumber port to connect
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
-    private static void communicateWithServer(String hostName, int portNumber) throws IOException {
-        Scanner scanner = new Scanner(System.in);
+    private static void communicateWithServer(Scanner scanner, String hostName, int portNumber) throws IOException {
         String fromUser = scanner.nextLine();
         while (!fromUser.equals("exit")) {
             Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
