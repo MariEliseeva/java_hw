@@ -5,25 +5,28 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/** Server answering for get and list requests: getting file or list of files in the directory.*/
 public class FTPServer {
+    /**
+     * Scans port number and starts waiting for the connection. Ends the program when enter pressed.
+     * @param args ignored
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Write port number.\n");
         int portNumber = Integer.parseInt(scanner.nextLine());
-        Thread serverThread = new Thread(() -> (new FTPServer(portNumber)).runServer());
+        Thread serverThread = new Thread(() -> runServer(portNumber));
         serverThread.setDaemon(true);
         serverThread.start();
         System.out.println("Press enter to end.\n");
         scanner.nextLine();
     }
 
-    private final int portNumber;
-
-    private FTPServer(int portNumber) {
-        this.portNumber = portNumber;
-    }
-
-    private void runServer() {
+    /**
+     * Waits for connections and work with requests while not interrupted.
+     * @param portNumber port to listen
+     */
+    private static void runServer(int portNumber) {
         try {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             while (!Thread.interrupted()) {
@@ -45,7 +48,13 @@ public class FTPServer {
         }
     }
 
-    private void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
+    /**
+     * Read a request from input and do the requested action.
+     * @param dataInputStream stream to read request
+     * @param dataOutputStream stream to answer
+     * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
+     */
+    private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
             int command = dataInputStream.readInt();
             switch (command) {
                 case 1:
@@ -62,7 +71,13 @@ public class FTPServer {
             }
     }
 
-    private void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
+    /**
+     * Writes in the output size of file and everything inside it.
+     * @param fileName file to write in the output
+     * @param dataOutputStream stream to answer
+     * @throws IOException thrown if problems with writing, for example when connection is lost.
+     */
+    private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
         FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(fileName);
@@ -75,16 +90,15 @@ public class FTPServer {
             return;
         }
         int size = 0;
-        int length;
+        int c;
         byte[] buffer = new byte[1024];
-        while ((length = fileInputStream.read(buffer)) == 1024) {
-            size += length;
+        while ((c = fileInputStream.read(buffer)) == 1024) {
+            size += c;
         }
-        size += length;
+        size += c;
         dataOutputStream.writeLong(size);
         fileInputStream.close();
         fileInputStream = new FileInputStream(fileName);
-        int c;
         while ((c = fileInputStream.read(buffer)) == 1024) {
             dataOutputStream.write(buffer, 0, c);
         }
@@ -92,7 +106,13 @@ public class FTPServer {
         fileInputStream.close();
     }
 
-    private void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
+    /**
+     * Writes in the output number of elements in the directory and names of all of them with noting if directory or not.
+     * @param directoryName directory to find files from
+     * @param dataOutputStream stream to answer
+     * @throws IOException thrown if problems with writing, for example when connection is lost.
+     */
+    private static void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
         File dir = new File(directoryName);
         if (!dir.isDirectory()) {
             dataOutputStream.writeInt(0);

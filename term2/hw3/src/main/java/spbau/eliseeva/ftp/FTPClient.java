@@ -7,7 +7,12 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
+/** Client for getting file or list of them from server.*/
 public class FTPClient {
+    /**
+     * Scans host name and port number and connects. Starts communication with the server.
+     * @param args ignored
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Write host name.\n");
@@ -16,13 +21,20 @@ public class FTPClient {
         int portNumber = Integer.parseInt(scanner.nextLine());
         try {
             checkConnection(hostName, portNumber);
-            communicateWithServer(scanner, hostName, portNumber);
+            communicateWithServer(hostName, portNumber);
         } catch (IOException e) {
             System.err.println("Problems with connection or reading and writing.");
         }
     }
 
-    private static void communicateWithServer(Scanner scanner, String hostName, int portNumber) throws IOException {
+    /**
+     * While user has not printed "exit" waits for new command and sends requests to server.
+     * @param hostName name of host
+     * @param portNumber port to connect
+     * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
+     */
+    private static void communicateWithServer(String hostName, int portNumber) throws IOException {
+        Scanner scanner = new Scanner(System.in);
         String fromUser = scanner.nextLine();
         while (!fromUser.equals("exit")) {
             Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
@@ -46,6 +58,11 @@ public class FTPClient {
         }
     }
 
+    /**
+     * Writes and answer for get request.
+     * @param in input stream to read data from
+     * @throws IOException thrown if problems with reading, for example when connection is lost.
+     */
     private static void getAnswer(DataInputStream in) throws IOException {
         int size = in.readInt();
         System.out.print(size);
@@ -57,6 +74,11 @@ public class FTPClient {
         }
     }
 
+    /**
+     * Writes and answer for list request.
+     * @param in input stream to read data from
+     * @throws IOException thrown if problems with reading, for example when connection is lost.
+     */
     private static void listAnswer(DataInputStream in) throws IOException {
         long size = in.readLong();
         System.out.print(size);
@@ -71,6 +93,12 @@ public class FTPClient {
         }
     }
 
+    /**
+     * Checks that connection exists, should write "connected" on the screen.
+     * @param hostName name of host
+     * @param portNumber port to connect
+     * @throws IOException thrown if problems with reading, for example when connection is lost.
+     */
     private static void checkConnection(String hostName, int portNumber) throws IOException {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
