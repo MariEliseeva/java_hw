@@ -1,8 +1,6 @@
 package spbau.eliseeva.ftp;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
@@ -49,9 +47,9 @@ public class FTPClient {
             out.writeUTF(fromUser.split(" ")[1]);
             out.flush();
             if (fromUser.charAt(0) == '1') {
-                getAnswer(in);
-            } else if (fromUser.charAt(0) == '2') {
                 listAnswer(in);
+            } else if (fromUser.charAt(0) == '2') {
+                getAnswer(in);
             }
             System.out.println();
             fromUser = scanner.nextLine();
@@ -63,7 +61,7 @@ public class FTPClient {
      * @param in input stream to read data from
      * @throws IOException thrown if problems with reading, for example when connection is lost.
      */
-    private static void getAnswer(DataInputStream in) throws IOException {
+    private static void listAnswer(DataInputStream in) throws IOException {
         int size = in.readInt();
         System.out.print(size);
         System.out.print(' ');
@@ -74,23 +72,33 @@ public class FTPClient {
         }
     }
 
+    /** Number of calling get.*/
+    private static int getNumber = 0;
+
     /**
      * Writes and answer for list request.
      * @param in input stream to read data from
      * @throws IOException thrown if problems with reading, for example when connection is lost.
      */
-    private static void listAnswer(DataInputStream in) throws IOException {
+    private static void getAnswer(DataInputStream in) throws IOException {
         long size = in.readLong();
         System.out.print(size);
+        File folder = new File("results");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        File file = new File("results/get" + getNumber);
+        getNumber++;
+        OutputStream outputStream = new FileOutputStream(file);
         if (size != 0) {
-            System.out.print(' ');
             int c;
             byte[] buffer = new byte[1024];
             while ((c = in.read(buffer)) == 1024) {
-                System.out.write(buffer, 0, c);
+                outputStream.write(buffer, 0, c);
             }
-            System.out.write(buffer, 0, c);
+            outputStream.write(buffer, 0, c);
         }
+        outputStream.close();
     }
 
     /**

@@ -33,15 +33,20 @@ public class FTPTest {
     /**
      * Checks some list and get requests.
      * @throws InterruptedException thrown if problems with threads.
+     * @throws IOException if problems with files
      */
     @Test
-    public void testListAndGet() throws InterruptedException {
+    public void testListAndGet() throws InterruptedException, IOException {
         runServer();
         InputStream clientInputStream = new ByteArrayInputStream(("localhost\n1234\n1 src/test/resources/dir1\n1 src/test/resources/dir1/dir2" +
                 "\n2 src/test/resources/dir1/dir4/file3\n1 src/test/resources/dir1/dir2/dir3\nexit\n").getBytes());
         assertArrayEquals(("Write host name.\nWrite port number.\nconnected\n3 (dir2 true)(dir4 true)(dir5 true)\n2 (dir3 true)(file1 false)" +
-                        "\n5 file3\n2 (file2 false)(file5 false)\n").getBytes(),
-                runClient(clientInputStream).toByteArray());
+                        "\n5\n2 (file2 false)(file5 false)\n").getBytes(), runClient(clientInputStream).toByteArray());
+        byte[] bytes = new byte[5];
+        (new FileInputStream(new File("results/get0"))).read(bytes);
+        System.out.write(bytes);
+        assertArrayEquals(("file3").getBytes(),bytes);
+        delete(new File("results"));
     }
 
     /**
@@ -66,8 +71,16 @@ public class FTPTest {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             }
-            assertArrayEquals(("Write host name.\nWrite port number.\nconnected\n5 file1\n").getBytes(),
+            assertArrayEquals(("Write host name.\nWrite port number.\nconnected\n5\n").getBytes(),
                     runClient(clientInputStream2).toByteArray());
+
+            byte[] bytes = new byte[5];
+            try {
+                (new FileInputStream(new File("results/get0"))).read(bytes);
+            } catch (IOException ignored) {
+            }
+            assertArrayEquals(("file1").getBytes(), bytes);
+            delete(new File("results"));
         });
         thread1.start();
         thread2.start();
@@ -101,4 +114,23 @@ public class FTPTest {
         FTPClient.main(new String[0]);
         return byteArrayOutputStream;
     }
+
+    /**
+     * Delete file  or directory.
+     * @param file file to delete
+     */
+    private void delete(File file) {
+        if (!file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            for(File f : file.listFiles()) {
+                delete(f);
+            }
+            file.delete();
+        } else {
+            file.delete();
+        }
+    }
+
 }
