@@ -1,7 +1,5 @@
 package spbau.eliseeva.ftp;
 
-import javafx.application.Platform;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -21,18 +19,13 @@ public class FTPClient {
     public FTPClient(int portNumber, String hostName) {
         this.portNumber = portNumber;
         this.hostName = hostName;
-        try {
-            checkConnection();
-        } catch (IOException e) {
-            Platform.exit();
-        }
     }
 
     /**
      * Returns answer to a list request
      * @param fromUser name of directory
-     * @return
-     * @throws IOException
+     * @return result of list request
+     * @throws IOException if problems with reading or writing data
      */
     public Map<String, Boolean> listAnswer(String fromUser) throws IOException {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
@@ -62,7 +55,6 @@ public class FTPClient {
         out.writeInt(2);
         out.writeUTF(fromUser);
         out.flush();
-
         long size = in.readLong();
         File folder = new File("results");
         if (!folder.exists()) {
@@ -78,15 +70,7 @@ public class FTPClient {
             }
             outputStream.write(buffer, 0, c);
         }
+        outputStream.flush();
         outputStream.close();
-    }
-
-    private boolean checkConnection() throws IOException {
-        Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
-        DataInputStream in = new DataInputStream(socket.getInputStream());
-        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        out.writeInt(17);
-        out.flush();
-        return in.readUTF().equals("connected");
     }
 }

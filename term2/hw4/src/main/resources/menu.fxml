@@ -19,9 +19,15 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
    <children>
-      <TextField fx:id="hostName" prefHeight="111.0" prefWidth="200.0" GridPane.columnIndex="1" />
-      <TextField fx:id="portNumber" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="208.0" prefWidth="200.0" text="Connect" textFill="#c90d65" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TextField fx:id="hostName" prefHeight="111.0" prefWidth="200.0" GridPane.columnIndex="1">
+         <font>
+            <Font size="24.0" />
+         </font></TextField>
+      <TextField fx:id="portNumber" prefHeight="96.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <font>
+            <Font size="24.0" />
+         </font></TextField>
+      <Button fx:id="connectButton" mnemonicParsing="false" prefHeight="103.0" prefWidth="200.0" text="Connect" textFill="#590ec7" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <font>
             <Font size="36.0" />
          </font>
@@ -34,6 +40,11 @@
       <Text fill="#c90d65" strokeType="OUTSIDE" strokeWidth="0.0" text="Port number" wrappingWidth="198.21875" GridPane.rowIndex="1">
          <font>
             <Font size="32.0" />
+         </font>
+      </Text>
+      <Text fill="#0d33c6" strokeType="OUTSIDE" strokeWidth="0.0" text="purple for files, pink for dirs" wrappingWidth="199.21875" GridPane.rowIndex="2">
+         <font>
+            <Font size="24.0" />
          </font>
       </Text>
    </children>

@@ -35,8 +35,7 @@ class FoldersController {
         this.hostName = hostName;
         try {
             names = client.listAnswer(root);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
         Button[] buttons = new Button[names.size()];
         int index = 0;
@@ -54,7 +53,7 @@ class FoldersController {
             backButton.setMaxWidth(400);
             backButton.setMaxHeight(400);
             backButton.setText("<-");
-            backButton.setStyle(" -fx-text-fill: #c90d65; -fx-opacity: 1.0;");
+            backButton.setStyle(" -fx-text-fill: #590ec7; -fx-opacity: 1.0;");
             backButton.setOnMouseClicked(event -> {
                 Stage stage = (Stage) backButton.getScene().getWindow();
                 int ind = root.length() - 1;
@@ -107,9 +106,9 @@ class FoldersController {
         button.setFocusTraversable(false);
         button.setMaxWidth(400);
         button.setMaxHeight(400);
-        button.setStyle(" -fx-text-fill: #c90d65; -fx-opacity: 1.0;");
         button.setText(text);
         if (isDirectory) {
+            button.setStyle(" -fx-text-fill: #c90d65; -fx-opacity: 1.0;");
             button.setOnMouseClicked(event -> {
                 Stage stage = (Stage) button.getScene().getWindow();
                 String newRoot = root;
@@ -120,6 +119,7 @@ class FoldersController {
                 stage.show();
             });
         } else {
+            button.setStyle(" -fx-text-fill: #590ec7; -fx-opacity: 1.0;");
             button.setOnMouseClicked(event -> {
                 FXMLLoader fxmlLoader = new FXMLLoader();
                 try {
@@ -133,7 +133,11 @@ class FoldersController {
                 } catch (IOException e) {
                     Platform.exit();
                 }
-                ((SaveController)fxmlLoader.getController()).initialize(client, root);
+                String newRoot = root;
+                if (!root.equals("/")) {
+                    newRoot += '/';
+                }
+                ((SaveController)fxmlLoader.getController()).initialize(client, newRoot + text);
                 Stage stage = new Stage();
                 stage.setTitle("Save");
                 stage.setScene(scene);
