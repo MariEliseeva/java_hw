@@ -79,7 +79,6 @@ public class FTPServer {
      */
     private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
         FileInputStream fileInputStream;
-        System.out.print(fileName);
         try {
             fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
@@ -97,7 +96,6 @@ public class FTPServer {
             size += c;
         }
         size += c;
-        System.out.print(size);
         dataOutputStream.writeLong(size);
         fileInputStream.close();
         fileInputStream = new FileInputStream(fileName);
