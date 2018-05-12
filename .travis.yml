@@ -1,5 +1,6 @@
 language: java
 jdk: oraclejdk8
 os: linux
-env:
+env: 
+  -PROJECT_DIR=term2/hw4
 script: cd $PROJECT_DIR && ./gradlew check
