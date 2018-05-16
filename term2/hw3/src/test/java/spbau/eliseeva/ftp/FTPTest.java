@@ -1,15 +1,19 @@
 package spbau.eliseeva.ftp;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
+import java.util.concurrent.ForkJoinPool;
+
 import static org.junit.Assert.*;
 
 /** Tests for FTPClient and FTPServer.*/
 public class FTPTest {
     private static final String END_OF_LINE = System.lineSeparator();
-    private static final TemporaryFolder FOLDER = new TemporaryFolder();
+    @Rule
+    public TemporaryFolder FOLDER = new TemporaryFolder();
     /** Checks if the server works as expected. */
     @Test
     public void testServer() {
@@ -41,14 +45,15 @@ public class FTPTest {
     @Test
     public void testListAndGet() throws InterruptedException, IOException {
         runServer();
+        FOLDER.newFolder("results");
         InputStream clientInputStream = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE
-                + "1 src/test/resources/dir1" + END_OF_LINE + "1 src/test/resources/dir1/dir2" + END_OF_LINE +
-                "2 src/test/resources/dir1/dir4/file3" + END_OF_LINE + "1 src/test/resources/dir1/dir2/dir3" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
+                + "list src/test/resources/dir1" + END_OF_LINE + "list src/test/resources/dir1/dir2" + END_OF_LINE +
+                "get src/test/resources/dir1/dir4/file3" + END_OF_LINE + "list src/test/resources/dir1/dir2/dir3" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
         assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE +
                 "3 (dir2 true)(dir4 true)(dir5 true)" + END_OF_LINE + "2 (dir3 true)(file1 false)" + END_OF_LINE +
                 "5" + END_OF_LINE + "2 (file2 false)(file5 false)" + END_OF_LINE).getBytes(), runClient(clientInputStream).toByteArray());
         byte[] bytes = new byte[5];
-        (new FileInputStream(FOLDER.newFile("results/get0"))).read(bytes);
+        (new FileInputStream(new File("results/src/test/resources/dir1/dir4/file3"))).read(bytes);
         System.out.write(bytes);
         assertArrayEquals(("file3").getBytes(),bytes);
     }
@@ -56,23 +61,25 @@ public class FTPTest {
     /**
      * Checks if two clients can work with same server.
      * @throws InterruptedException thrown if problems with threads.
+     * @throws IOException if problems with files
      */
     @Test
-    public void testTwoClients() throws InterruptedException {
+    public void testTwoClients() throws InterruptedException, IOException {
         runServer();
+        FOLDER.newFolder("results");
         Thread thread1 = new Thread(() -> {
             InputStream clientInputStream1 = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE +
-                    "1 src/test/resources/dir1/dir5" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
+                    "list src/test/resources/dir1/dir5" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             }
-            assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE + "1 (file4 false)").getBytes(),
+            assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE + "list (file4 false)").getBytes(),
                     runClient(clientInputStream1).toByteArray());
         });
         Thread thread2 = new Thread(() -> {
             InputStream clientInputStream2 = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE +
-                    "2 src/test/resources/dir1/dir2/file1" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
+                    "get src/test/resources/dir1/dir2/file1" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
@@ -82,7 +89,7 @@ public class FTPTest {
 
             byte[] bytes = new byte[5];
             try {
-                (new FileInputStream(FOLDER.newFile("results/get0"))).read(bytes);
+                (new FileInputStream(new File("results/src/test/resources/dir1/dir2/file1"))).read(bytes);
             } catch (IOException ignored) {
             }
             assertArrayEquals(("file1").getBytes(), bytes);

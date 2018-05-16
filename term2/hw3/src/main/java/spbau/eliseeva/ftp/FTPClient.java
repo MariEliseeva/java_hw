@@ -87,11 +87,8 @@ public class FTPClient {
             return;
         }
         System.out.print(size);
-        File folder = new File("results");
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
         File file = new File("results/" + fileName);
+        file.getParentFile().mkdirs();
         OutputStream outputStream = new FileOutputStream(file);
         int c;
         byte[] buffer = new byte[1024];
