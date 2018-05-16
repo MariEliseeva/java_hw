@@ -33,26 +33,29 @@ public class FTPClient {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void communicateWithServer(Scanner scanner, String hostName, int portNumber) throws IOException {
-        String fromUser = scanner.nextLine();
-        while (!fromUser.equals("exit")) {
+        String[] fromUser = scanner.nextLine().split(" ");
+        while (!fromUser[0].equals("exit")) {
+            if (!fromUser[0].equals("list") && !fromUser[0].equals("get") || fromUser.length != 2) {
+                System.out.println("Wrong command.");
+                fromUser = scanner.nextLine().split(" ");
+                continue;
+            }
             Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-            if (fromUser.charAt(0) != '1' && fromUser.charAt(0) != '2') {
-                System.out.println("Wrong command.");
-                fromUser = scanner.nextLine();
-                continue;
-            }
-            out.writeInt(fromUser.charAt(0) - '0');
-            out.writeUTF(fromUser.split(" ")[1]);
-            out.flush();
-            if (fromUser.charAt(0) == '1') {
+            if (fromUser[0].equals("list")) {
+                out.writeInt(0);
+                out.writeUTF(fromUser[1]);
+                out.flush();
                 listAnswer(in);
-            } else if (fromUser.charAt(0) == '2') {
-                getAnswer(in);
+            } else {
+                out.writeInt(1);
+                out.writeUTF(fromUser[1]);
+                out.flush();
+                getAnswer(in, fromUser[1]);
             }
             System.out.println();
-            fromUser = scanner.nextLine();
+            fromUser = scanner.nextLine().split(" ");
         }
     }
 
@@ -72,32 +75,30 @@ public class FTPClient {
         }
     }
 
-    /** Number of calling get.*/
-    private static int getNumber = 0;
-
     /**
      * Writes and answer for list request.
      * @param in input stream to read data from
      * @throws IOException thrown if problems with reading, for example when connection is lost.
      */
-    private static void getAnswer(DataInputStream in) throws IOException {
+    private static void getAnswer(DataInputStream in, String fileName) throws IOException {
         long size = in.readLong();
+        if (size == 0) {
+            System.out.println("Wrong name or file is directory.");
+            return;
+        }
         System.out.print(size);
         File folder = new File("results");
         if (!folder.exists()) {
             folder.mkdir();
         }
-        File file = new File("results/get" + getNumber);
-        getNumber++;
+        File file = new File("results/" + fileName);
         OutputStream outputStream = new FileOutputStream(file);
-        if (size != 0) {
-            int c;
-            byte[] buffer = new byte[1024];
-            while ((c = in.read(buffer)) == 1024) {
-                outputStream.write(buffer, 0, c);
-            }
+        int c;
+        byte[] buffer = new byte[1024];
+        while ((c = in.read(buffer)) == 1024) {
             outputStream.write(buffer, 0, c);
         }
+        outputStream.write(buffer, 0, c);
         outputStream.close();
     }
 
@@ -111,7 +112,7 @@ public class FTPClient {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        out.writeInt(17);
+        out.writeInt(2);
         out.flush();
         System.out.println(in.readUTF());
     }

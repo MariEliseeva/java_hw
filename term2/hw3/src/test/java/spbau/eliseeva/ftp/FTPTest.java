@@ -1,22 +1,24 @@
 package spbau.eliseeva.ftp;
 
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.*;
 import static org.junit.Assert.*;
 
 /** Tests for FTPClient and FTPServer.*/
 public class FTPTest {
-    private static final String endOfLine = System.lineSeparator();
+    private static final String END_OF_LINE = System.lineSeparator();
+    private static final TemporaryFolder FOLDER = new TemporaryFolder();
     /** Checks if the server works as expected. */
     @Test
     public void testServer() {
-        InputStream serverInputStream = new ByteArrayInputStream(("1234" + endOfLine + endOfLine).getBytes());
+        InputStream serverInputStream = new ByteArrayInputStream(("1234" + END_OF_LINE + END_OF_LINE).getBytes());
         System.setIn(serverInputStream);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(byteArrayOutputStream));
         FTPServer.main(new String[0]);
-        assertArrayEquals(("Write port number." + endOfLine + "Press enter to end." + endOfLine + endOfLine).getBytes(), byteArrayOutputStream.toByteArray());
+        assertArrayEquals(("Write port number." + END_OF_LINE + "Press enter to end." + END_OF_LINE + END_OF_LINE).getBytes(), byteArrayOutputStream.toByteArray());
     }
 
     /**
@@ -26,8 +28,8 @@ public class FTPTest {
     @Test
     public void testConnection() throws InterruptedException {
         runServer();
-        InputStream clientInputStream = new ByteArrayInputStream(("localhost" + endOfLine + "1234" + endOfLine +"exit" + endOfLine).getBytes());
-        assertArrayEquals(("Write host name." + endOfLine + "Write port number." + endOfLine + "connected" + endOfLine).getBytes(),
+        InputStream clientInputStream = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE +"exit" + END_OF_LINE).getBytes());
+        assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE).getBytes(),
                 runClient(clientInputStream).toByteArray());
     }
 
@@ -39,17 +41,16 @@ public class FTPTest {
     @Test
     public void testListAndGet() throws InterruptedException, IOException {
         runServer();
-        InputStream clientInputStream = new ByteArrayInputStream(("localhost" + endOfLine + "1234" + endOfLine
-                + "1 src/test/resources/dir1" + endOfLine + "1 src/test/resources/dir1/dir2" + endOfLine +
-                "2 src/test/resources/dir1/dir4/file3" + endOfLine + "1 src/test/resources/dir1/dir2/dir3" + endOfLine + "exit" + endOfLine).getBytes());
-        assertArrayEquals(("Write host name." + endOfLine + "Write port number." + endOfLine + "connected" + endOfLine +
-                "3 (dir2 true)(dir4 true)(dir5 true)" + endOfLine + "2 (dir3 true)(file1 false)" + endOfLine +
-                "5" + endOfLine + "2 (file2 false)(file5 false)" + endOfLine).getBytes(), runClient(clientInputStream).toByteArray());
+        InputStream clientInputStream = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE
+                + "1 src/test/resources/dir1" + END_OF_LINE + "1 src/test/resources/dir1/dir2" + END_OF_LINE +
+                "2 src/test/resources/dir1/dir4/file3" + END_OF_LINE + "1 src/test/resources/dir1/dir2/dir3" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
+        assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE +
+                "3 (dir2 true)(dir4 true)(dir5 true)" + END_OF_LINE + "2 (dir3 true)(file1 false)" + END_OF_LINE +
+                "5" + END_OF_LINE + "2 (file2 false)(file5 false)" + END_OF_LINE).getBytes(), runClient(clientInputStream).toByteArray());
         byte[] bytes = new byte[5];
-        (new FileInputStream(new File("results/get0"))).read(bytes);
+        (new FileInputStream(FOLDER.newFile("results/get0"))).read(bytes);
         System.out.write(bytes);
         assertArrayEquals(("file3").getBytes(),bytes);
-        delete(new File("results"));
     }
 
     /**
@@ -60,32 +61,31 @@ public class FTPTest {
     public void testTwoClients() throws InterruptedException {
         runServer();
         Thread thread1 = new Thread(() -> {
-            InputStream clientInputStream1 = new ByteArrayInputStream(("localhost" + endOfLine + "1234" + endOfLine +
-                    "1 src/test/resources/dir1/dir5" + endOfLine + "exit" + endOfLine).getBytes());
+            InputStream clientInputStream1 = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE +
+                    "1 src/test/resources/dir1/dir5" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             }
-            assertArrayEquals(("Write host name." + endOfLine + "Write port number." + endOfLine + "connected" + endOfLine + "1 (file4 false)").getBytes(),
+            assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE + "1 (file4 false)").getBytes(),
                     runClient(clientInputStream1).toByteArray());
         });
         Thread thread2 = new Thread(() -> {
-            InputStream clientInputStream2 = new ByteArrayInputStream(("localhost" + endOfLine + "1234" + endOfLine +
-                    "2 src/test/resources/dir1/dir2/file1" + endOfLine + "exit" + endOfLine).getBytes());
+            InputStream clientInputStream2 = new ByteArrayInputStream(("localhost" + END_OF_LINE + "1234" + END_OF_LINE +
+                    "2 src/test/resources/dir1/dir2/file1" + END_OF_LINE + "exit" + END_OF_LINE).getBytes());
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ignored) {
             }
-            assertArrayEquals(("Write host name." + endOfLine + "Write port number." + endOfLine + "connected" + endOfLine + "5" + endOfLine).getBytes(),
+            assertArrayEquals(("Write host name." + END_OF_LINE + "Write port number." + END_OF_LINE + "connected" + END_OF_LINE + "5" + END_OF_LINE).getBytes(),
                     runClient(clientInputStream2).toByteArray());
 
             byte[] bytes = new byte[5];
             try {
-                (new FileInputStream(new File("results/get0"))).read(bytes);
+                (new FileInputStream(FOLDER.newFile("results/get0"))).read(bytes);
             } catch (IOException ignored) {
             }
             assertArrayEquals(("file1").getBytes(), bytes);
-            delete(new File("results"));
         });
         thread1.start();
         thread2.start();
@@ -96,7 +96,7 @@ public class FTPTest {
      * @throws InterruptedException thrown if problems with threads.
      */
     private void runServer() throws InterruptedException {
-        InputStream serverInputStream = new ByteArrayInputStream(("1234" + endOfLine + endOfLine).getBytes());
+        InputStream serverInputStream = new ByteArrayInputStream(("1234" + END_OF_LINE + END_OF_LINE).getBytes());
         Thread thread = new Thread(() -> {
             System.setIn(serverInputStream);
             System.setOut(new PrintStream(new ByteArrayOutputStream()));
@@ -119,23 +119,4 @@ public class FTPTest {
         FTPClient.main(new String[0]);
         return byteArrayOutputStream;
     }
-
-    /**
-     * Delete file  or directory.
-     * @param file file to delete
-     */
-    private void delete(File file) {
-        if (!file.exists()) {
-            return;
-        }
-        if (file.isDirectory()) {
-            for(File f : file.listFiles()) {
-                delete(f);
-            }
-            file.delete();
-        } else {
-            file.delete();
-        }
-    }
-
 }

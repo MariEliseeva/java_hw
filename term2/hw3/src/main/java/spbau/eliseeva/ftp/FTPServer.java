@@ -48,6 +48,9 @@ public class FTPServer {
         }
     }
 
+    /** Commands which exists. */
+    private enum Command {LIST, GET, CONNECT}
+
     /**
      * Read a request from input and do the requested action.
      * @param dataInputStream stream to read request
@@ -55,15 +58,15 @@ public class FTPServer {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
-            int command = dataInputStream.readInt();
+            Command command = Command.values()[dataInputStream.readInt()];
             switch (command) {
-                case 1:
+                case LIST:
                     list(dataInputStream.readUTF(), dataOutputStream);
                     break;
-                case 2:
+                case GET:
                     get(dataInputStream.readUTF(), dataOutputStream);
                     break;
-                case 17:
+                case CONNECT:
                     dataOutputStream.writeUTF("connected");
                     break;
                 default:
