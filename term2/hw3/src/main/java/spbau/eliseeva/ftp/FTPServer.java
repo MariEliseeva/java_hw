@@ -48,9 +48,6 @@ public class FTPServer {
         }
     }
 
-    /** Commands which exists. */
-    private enum Command {LIST, GET, CONNECT}
-
     /**
      * Read a request from input and do the requested action.
      * @param dataInputStream stream to read request

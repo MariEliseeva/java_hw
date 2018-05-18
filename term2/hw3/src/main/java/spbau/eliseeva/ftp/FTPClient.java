@@ -44,12 +44,12 @@ public class FTPClient {
             DataInputStream in = new DataInputStream(socket.getInputStream());
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             if (fromUser[0].equals("list")) {
-                out.writeInt(0);
+                out.writeInt(Command.LIST.ordinal());
                 out.writeUTF(fromUser[1]);
                 out.flush();
                 listAnswer(in);
             } else {
-                out.writeInt(1);
+                out.writeInt(Command.GET.ordinal());
                 out.writeUTF(fromUser[1]);
                 out.flush();
                 getAnswer(in, fromUser[1]);
@@ -109,7 +109,7 @@ public class FTPClient {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        out.writeInt(2);
+        out.writeInt(Command.CONNECT.ordinal());
         out.flush();
         System.out.println(in.readUTF());
     }
