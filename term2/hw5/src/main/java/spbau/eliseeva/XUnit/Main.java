@@ -102,7 +102,7 @@ public class Main {
     private static Report runTest(Class clazz, Method testMethod, List<Method> beforeMethods, List<Method> afterMethods) {
         Test testAnnotation = testMethod.getAnnotation(Test.class);
         if (!testAnnotation.ignore().equals("")) {
-            return new Report(testMethod.getName(), "Ignored:" + testAnnotation.ignore(), 0, true);
+            return new Report(testMethod.getName(), "Ignored: " + testAnnotation.ignore(), 0, true);
         }
         Object instance = null;
         Exception testException = null;

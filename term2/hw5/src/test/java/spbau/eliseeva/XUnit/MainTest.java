@@ -38,8 +38,8 @@ public class MainTest {
     }
 
     @Test
-    public void ExceptionTest() {
-        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.ExpectedTest\n").getBytes()));
+    public void BadExceptionTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.BadExceptionTest\n").getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
         Main.main(new String[0]);
@@ -51,4 +51,31 @@ public class MainTest {
                 "Success: false" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
     }
 
+    @Test
+    public void NoExceptionTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.NoExceptionTest\n").getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Main.main(new String[0]);
+        assertArrayEquals(("Write directory name:" + END_OF_LINE +
+                "Write class name:" + END_OF_LINE  +
+                "Test: test2" + END_OF_LINE +
+                "Message: No exception, was waited: java.io.IOException" + END_OF_LINE +
+                "Time: 0" + END_OF_LINE +
+                "Success: false" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
+    }
+
+    @Test
+    public void IgnoreTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.IgnoreTest\n").getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Main.main(new String[0]);
+        assertArrayEquals(("Write directory name:" + END_OF_LINE +
+                "Write class name:" + END_OF_LINE  +
+                "Test: test1" + END_OF_LINE +
+                "Message: Ignored: reason" + END_OF_LINE +
+                "Time: 0" + END_OF_LINE +
+                "Success: true" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
+    }
 }
