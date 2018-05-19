@@ -1,5 +1,6 @@
 package spbau.eliseeva.XUnit;
 
+import javafx.application.Platform;
 import spbau.eliseeva.XUnit.annotations.*;
 
 import java.lang.annotation.Annotation;
@@ -14,7 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/** The main class for running tests using annotations.*/
 public class Main {
+    /**
+     * Takes directory name and class name, loads the class and runs all test
+     * methods with before/after/beforeClass/afterClass methods. Prints results.
+     * @param args ignored
+     */
     public static void main(String[] args) {
         System.out.println("Write directory name:");
         Scanner scanner = new Scanner(System.in);
@@ -35,45 +42,39 @@ public class Main {
         List<Method> afterClassMethods = getMethods(clazz, AfterClass.class);
         if (beforeClassMethods.size() > 1) {
             System.out.println("Too many BeforeClass methods.");
+            return;
         }
         if (afterClassMethods.size() > 1) {
             System.out.println("Too many AfterClass methods.");
+            return;
         }
         if (beforeMethods.size() > 1) {
             System.out.println("Too many Before methods.");
+            return;
         }
         if (afterMethods.size() > 1) {
             System.out.println("Too many After methods.");
+            return;
         }
 
         List<Report> reports = new ArrayList<>();
-        Object instance = null;
+        Object instance;
         try {
             instance = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        try {
-            for (Method beforeClassMethod : beforeClassMethods) {
-                beforeClassMethod.invoke(instance);
-            }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            beforeClassMethods.get(0).invoke(instance);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            System.err.println("Problems with beforeClass method");
+            return;
         }
         for (Method method : testMethods) {
-            reports.add(runTest(clazz, method, beforeMethods, afterMethods));
+            reports.add(runTest(clazz, method, beforeMethods.get(0), afterMethods.get(0)));
         }
         try {
             instance = clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        try {
-            for (Method afterClassMethod : afterClassMethods) {
-                afterClassMethod.invoke(instance);
-            }
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            afterClassMethods.get(0).invoke(instance);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            System.err.println("Problems with afterClass method");
+            return;
         }
         for (Report report : reports) {
             System.out.println("Test: " + report.testName);
@@ -84,6 +85,12 @@ public class Main {
         }
     }
 
+    /**
+     * Takes class and returns methods with needed annotation.
+     * @param clazz class to find mehod
+     * @param annotation method to find
+     * @return list of needed methods
+     */
     private static List<Method> getMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
         ArrayList<Method> methods = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
@@ -98,6 +105,7 @@ public class Main {
         return methods;
     }
 
+    /** Class to save the information about the results*/
     private static class Report {
         private String message;
         private String testName;
@@ -111,7 +119,15 @@ public class Main {
         }
     }
 
-    private static Report runTest(Class clazz, Method testMethod, List<Method> beforeMethods, List<Method> afterMethods) {
+    /**
+     * Runts test method in the class.
+     * @param clazz class to run test
+     * @param testMethod test to run
+     * @param beforeMethod method to run before
+     * @param afterMethod method to run after
+     * @return Report object with results
+     */
+    private static Report runTest(Class clazz, Method testMethod, Method beforeMethod, Method afterMethod) {
         Test testAnnotation = testMethod.getAnnotation(Test.class);
         if (!testAnnotation.ignore().equals("")) {
             return new Report(testMethod.getName(), "Ignored: " + testAnnotation.ignore(), 0, true);
@@ -125,15 +141,12 @@ public class Main {
         }
         long timeBegin = System.currentTimeMillis();
         try {
-            for (Method beforeMethod : beforeMethods) {
-                beforeMethod.invoke(instance);
-            }
+            beforeMethod.invoke(instance);
             testMethod.invoke(instance);
-            for (Method afterMethod : afterMethods) {
-                afterMethod.invoke(instance);
-            }
+            afterMethod.invoke(instance);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            System.err.println("Problems with before, test or after method.");
+            Platform.exit();
         } catch (InvocationTargetException e) {
             testException = (Exception) e.getCause();
         }
