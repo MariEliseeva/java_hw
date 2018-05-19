@@ -27,11 +27,11 @@ public class MainTest {
                 "test2" + END_OF_LINE +
                 "After" + END_OF_LINE +
                 "AfterClass" + END_OF_LINE +
-                "Test: test2" + END_OF_LINE +
+                "Test: test1" + END_OF_LINE +
                 "Message: Done" + END_OF_LINE +
                 "Time: 0" + END_OF_LINE +
                 "Success: true" + END_OF_LINE + END_OF_LINE +
-                "Test: test1" + END_OF_LINE +
+                "Test: test2" + END_OF_LINE +
                 "Message: Done" + END_OF_LINE +
                 "Time: 0" + END_OF_LINE +
                 "Success: true" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
