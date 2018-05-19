@@ -48,11 +48,7 @@ public class MainTest {
                 "Test: test2" + END_OF_LINE +
                 "Message: Exception: java.io.IOException" + END_OF_LINE +
                 "Time: 0" + END_OF_LINE +
-                "Success: false" + END_OF_LINE + END_OF_LINE +
-                "Test: test1" + END_OF_LINE +
-                "Message: Done" + END_OF_LINE +
-                "Time: 0" + END_OF_LINE +
-                "Success: true" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
+                "Success: false" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
     }
 
 }
