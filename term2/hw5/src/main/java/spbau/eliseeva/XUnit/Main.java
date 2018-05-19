@@ -129,7 +129,7 @@ public class Main {
         if (testException == null && !testAnnotation.expected().equals(Test.Empty.class)) {
             return new Report(testMethod.getName(), "No exception, was waited: " + testAnnotation.expected().getName(), time, false);
         }
-        if (testException != null && testAnnotation.expected().equals(Test.Empty.class)) {
+        if (testException != null && !testAnnotation.expected().equals(testException.getClass())) {
             return new Report(testMethod.getName(), "Exception: " + testAnnotation.expected().getName(), time, false);
         }
         return new Report(testMethod.getName(), "Done", time, true);

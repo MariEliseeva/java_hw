@@ -1,6 +1,8 @@
+package spbau.eliseeva.XUnit;
+
 import spbau.eliseeva.XUnit.annotations.*;
 
-public class simpleTest {
+public class SimpleTest {
     @Before
     public void before() {
         System.out.println("Before");

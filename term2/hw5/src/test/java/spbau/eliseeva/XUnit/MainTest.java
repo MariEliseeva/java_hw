@@ -9,11 +9,11 @@ import java.io.PrintStream;
 import static org.junit.Assert.*;
 
 public class MainTest {
-    private static final String END_OF_LINE = "\n";//System.lineSeparator();
+    private static final String END_OF_LINE = System.lineSeparator();
 
     @Test
     public void SimpleTest() {
-        System.setIn(new ByteArrayInputStream(("src/test/resources\nsimpleTest\n").getBytes()));
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.SimpleTest\n").getBytes()));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
         Main.main(new String[0]);
@@ -36,4 +36,23 @@ public class MainTest {
                 "Time: 0" + END_OF_LINE +
                 "Success: true" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
     }
+
+    @Test
+    public void ExceptionTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.ExpectedTest\n").getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Main.main(new String[0]);
+        assertArrayEquals(("Write directory name:" + END_OF_LINE +
+                "Write class name:" + END_OF_LINE +
+                "Test: test1" + END_OF_LINE +
+                "Message: Done" + END_OF_LINE +
+                "Time: 0" + END_OF_LINE +
+                "Success: true" + END_OF_LINE + END_OF_LINE +
+                "Test: test2" + END_OF_LINE +
+                "Message: Exception: java.io.IOException" + END_OF_LINE +
+                "Time: 0" + END_OF_LINE +
+                "Success: false" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
+    }
+
 }
