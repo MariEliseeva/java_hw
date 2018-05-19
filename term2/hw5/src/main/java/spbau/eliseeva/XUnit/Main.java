@@ -33,6 +33,18 @@ public class Main {
         List<Method> afterMethods = getMethods(clazz, After.class);
         List<Method> beforeClassMethods = getMethods(clazz, BeforeClass.class);
         List<Method> afterClassMethods = getMethods(clazz, AfterClass.class);
+        if (beforeClassMethods.size() > 1) {
+            System.out.println("Too many BeforeClass methods.");
+        }
+        if (afterClassMethods.size() > 1) {
+            System.out.println("Too many AfterClass methods.");
+        }
+        if (beforeMethods.size() > 1) {
+            System.out.println("Too many Before methods.");
+        }
+        if (afterMethods.size() > 1) {
+            System.out.println("Too many After methods.");
+        }
 
         List<Report> reports = new ArrayList<>();
         Object instance = null;

@@ -78,4 +78,15 @@ public class MainTest {
                 "Time: 0" + END_OF_LINE +
                 "Success: true" + END_OF_LINE + END_OF_LINE).getBytes(), outputStream.toByteArray());
     }
+
+    @Test
+    public void ManyAfterTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.ManyAfterTest\n").getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Main.main(new String[0]);
+        assertArrayEquals(("Write directory name:" + END_OF_LINE +
+                "Write class name:" + END_OF_LINE  +
+                "Too many After methods." + END_OF_LINE).getBytes(), outputStream.toByteArray());
+    }
 }
