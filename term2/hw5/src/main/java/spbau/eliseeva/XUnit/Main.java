@@ -61,17 +61,21 @@ public class Main {
         Object instance;
         try {
             instance = clazz.newInstance();
-            beforeClassMethods.get(0).invoke(instance);
+            for (Method beforeClassMethod : beforeClassMethods) {
+                beforeClassMethod.invoke(instance);
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             System.err.println("Problems with beforeClass method");
             return;
         }
         for (Method method : testMethods) {
-            reports.add(runTest(clazz, method, beforeMethods.get(0), afterMethods.get(0)));
+            reports.add(runTest(clazz, method, beforeMethods, afterMethods));
         }
         try {
             instance = clazz.newInstance();
-            afterClassMethods.get(0).invoke(instance);
+            for (Method afterClassMethod : afterClassMethods) {
+                afterClassMethod.invoke(instance);
+            }
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             System.err.println("Problems with afterClass method");
             return;
@@ -123,11 +127,11 @@ public class Main {
      * Runts test method in the class.
      * @param clazz class to run test
      * @param testMethod test to run
-     * @param beforeMethod method to run before
-     * @param afterMethod method to run after
+     * @param beforeMethods methods to run before
+     * @param afterMethods methods to run after
      * @return Report object with results
      */
-    private static Report runTest(Class clazz, Method testMethod, Method beforeMethod, Method afterMethod) {
+    private static Report runTest(Class clazz, Method testMethod, List<Method> beforeMethods, List<Method> afterMethods) {
         Test testAnnotation = testMethod.getAnnotation(Test.class);
         if (!testAnnotation.ignore().equals("")) {
             return new Report(testMethod.getName(), "Ignored: " + testAnnotation.ignore(), 0, true);
@@ -141,9 +145,13 @@ public class Main {
         }
         long timeBegin = System.currentTimeMillis();
         try {
-            beforeMethod.invoke(instance);
+            for (Method beforeMethod : beforeMethods) {
+                beforeMethod.invoke(instance);
+            }
             testMethod.invoke(instance);
-            afterMethod.invoke(instance);
+            for (Method afterMethod : afterMethods) {
+                afterMethod.invoke(instance);
+            }
         } catch (IllegalAccessException e) {
             System.err.println("Problems with before, test or after method.");
             Platform.exit();
