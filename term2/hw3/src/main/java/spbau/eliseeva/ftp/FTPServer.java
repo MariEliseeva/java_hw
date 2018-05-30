@@ -57,20 +57,20 @@ public class FTPServer {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
-            Command command = Command.values()[dataInputStream.readInt()];
-            switch (command) {
-                case LIST:
-                    list(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case GET:
-                    get(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case CONNECT:
-                    dataOutputStream.writeUTF("connected");
-                    break;
-                default:
-                    dataOutputStream.writeUTF("wrong command.");
-            }
+        Command command = Command.values()[dataInputStream.readInt()];
+        switch (command) {
+            case LIST:
+                list(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case GET:
+                get(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case CONNECT:
+                dataOutputStream.writeUTF("connected");
+                break;
+            default:
+                dataOutputStream.writeUTF("wrong command.");
+        }
     }
 
     /**
