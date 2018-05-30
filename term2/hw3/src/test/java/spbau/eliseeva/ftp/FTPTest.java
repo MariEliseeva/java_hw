@@ -110,7 +110,7 @@ public class FTPTest {
         });
         thread.setDaemon(true);
         thread.start();
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 
     /**
