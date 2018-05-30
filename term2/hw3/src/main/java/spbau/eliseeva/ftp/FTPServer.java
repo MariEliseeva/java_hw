@@ -3,6 +3,8 @@ package spbau.eliseeva.ftp;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /** Server answering for get and list requests: getting file or list of files in the directory.*/
@@ -55,20 +57,20 @@ public class FTPServer {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
-            int command = dataInputStream.readInt();
-            switch (command) {
-                case 1:
-                    list(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case 2:
-                    get(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case 17:
-                    dataOutputStream.writeUTF("connected");
-                    break;
-                default:
-                    dataOutputStream.writeUTF("wrong command.");
-            }
+        Command command = Command.values()[dataInputStream.readInt()];
+        switch (command) {
+            case LIST:
+                list(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case GET:
+                get(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case CONNECT:
+                dataOutputStream.writeUTF("connected");
+                break;
+            default:
+                dataOutputStream.writeUTF("wrong command.");
+        }
     }
 
     /**
@@ -78,15 +80,15 @@ public class FTPServer {
      * @throws IOException thrown if problems with writing, for example when connection is lost.
      */
     private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
+        if ((new File(fileName)).isDirectory()) {
+            dataOutputStream.writeLong(-2);
+            return;
+        }
         FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            dataOutputStream.writeLong(0);
-            return;
-        }
-        if ((new File(fileName)).isDirectory()) {
-            dataOutputStream.writeLong(0);
+            dataOutputStream.writeLong(-1);
             return;
         }
         int size = 0;
@@ -115,11 +117,13 @@ public class FTPServer {
     private static void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
         File dir = new File(directoryName);
         if (!dir.isDirectory()) {
-            dataOutputStream.writeInt(0);
+            dataOutputStream.writeInt(-1);
             return;
         }
         dataOutputStream.writeInt(dir.listFiles().length);
-        for (File file : dir.listFiles()) {
+        File [] files = dir.listFiles();
+        Arrays.sort(files, Comparator.comparing(File::getName));
+        for (File file : files) {
             dataOutputStream.writeUTF(file.getName());
             dataOutputStream.writeBoolean(file.isDirectory());
         }

@@ -31,7 +31,7 @@ public class FTPClient {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        out.writeInt(1);
+        out.writeInt(Command.LIST.ordinal());
         out.writeUTF(fromUser);
         out.flush();
         int size = in.readInt();
@@ -52,25 +52,19 @@ public class FTPClient {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-        out.writeInt(2);
+        out.writeInt(Command.GET.ordinal());
         out.writeUTF(fromUser);
         out.flush();
-        long size = in.readLong();
-        File folder = new File("results");
-        if (!folder.exists()) {
-            folder.mkdir();
-        }
+        in.readLong();
         File file = new File("results/" + fileName);
+        file.getParentFile().mkdirs();
         OutputStream outputStream = new FileOutputStream(file);
-        if (size != 0) {
-            int c;
-            byte[] buffer = new byte[1024];
-            while ((c = in.read(buffer)) == 1024) {
-                outputStream.write(buffer, 0, c);
-            }
+        int c;
+        byte[] buffer = new byte[1024];
+        while ((c = in.read(buffer)) == 1024) {
             outputStream.write(buffer, 0, c);
         }
-        outputStream.flush();
+        outputStream.write(buffer, 0, c);
         outputStream.close();
     }
 }
