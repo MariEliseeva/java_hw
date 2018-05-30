@@ -3,8 +3,6 @@ package spbau.eliseeva.ftp;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Scanner;
 
 /** Server answering for get and list requests: getting file or list of files in the directory.*/
@@ -57,15 +55,15 @@ public class FTPServer {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
-            Command command = Command.values()[dataInputStream.readInt()];
+            int command = dataInputStream.readInt();
             switch (command) {
-                case LIST:
+                case 1:
                     list(dataInputStream.readUTF(), dataOutputStream);
                     break;
-                case GET:
+                case 2:
                     get(dataInputStream.readUTF(), dataOutputStream);
                     break;
-                case CONNECT:
+                case 17:
                     dataOutputStream.writeUTF("connected");
                     break;
                 default:
@@ -80,15 +78,15 @@ public class FTPServer {
      * @throws IOException thrown if problems with writing, for example when connection is lost.
      */
     private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
-        if ((new File(fileName)).isDirectory()) {
-            dataOutputStream.writeLong(-2);
-            return;
-        }
         FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            dataOutputStream.writeLong(-1);
+            dataOutputStream.writeLong(0);
+            return;
+        }
+        if ((new File(fileName)).isDirectory()) {
+            dataOutputStream.writeLong(0);
             return;
         }
         int size = 0;
@@ -117,13 +115,11 @@ public class FTPServer {
     private static void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
         File dir = new File(directoryName);
         if (!dir.isDirectory()) {
-            dataOutputStream.writeInt(-1);
+            dataOutputStream.writeInt(0);
             return;
         }
         dataOutputStream.writeInt(dir.listFiles().length);
-        File [] files = dir.listFiles();
-        Arrays.sort(files, Comparator.comparing(File::getName));
-        for (File file : files) {
+        for (File file : dir.listFiles()) {
             dataOutputStream.writeUTF(file.getName());
             dataOutputStream.writeBoolean(file.isDirectory());
         }
