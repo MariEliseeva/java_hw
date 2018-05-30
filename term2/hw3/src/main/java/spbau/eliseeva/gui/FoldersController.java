@@ -3,6 +3,7 @@ package spbau.eliseeva.gui;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
@@ -125,19 +126,23 @@ class FoldersController {
                 try {
                     fxmlLoader.setLocation(new File("src/main/resources/save.fxml").toURI().toURL());
                 } catch (MalformedURLException e) {
-                    Platform.exit();
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Not possible to save file.");
+                    alert.showAndWait();
                 }
                 Scene scene = null;
                 try {
                     scene = new Scene(fxmlLoader.load(), 400, 200);
                 } catch (IOException e) {
-                    Platform.exit();
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Not possible to save file.");
+                    alert.showAndWait();
                 }
                 String newRoot = root;
                 if (!root.equals("/")) {
                     newRoot += '/';
                 }
-                ((SaveController)fxmlLoader.getController()).initialize(client, newRoot + text);
+                ((SaveController)fxmlLoader.getController()).initialize(client, newRoot + text, text);
                 Stage stage = new Stage();
                 stage.setTitle("Save");
                 stage.setScene(scene);
