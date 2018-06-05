@@ -81,14 +81,14 @@ public class FTPServer {
      */
     private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
         if ((new File(fileName)).isDirectory()) {
-            dataOutputStream.writeLong(-2);
+            dataOutputStream.writeLong(0);
             return;
         }
         FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            dataOutputStream.writeLong(-1);
+            dataOutputStream.writeLong(0);
             return;
         }
         int size = 0;
@@ -117,7 +117,7 @@ public class FTPServer {
     private static void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
         File dir = new File(directoryName);
         if (!dir.isDirectory()) {
-            dataOutputStream.writeInt(-1);
+            dataOutputStream.writeInt(0);
             return;
         }
         dataOutputStream.writeInt(dir.listFiles().length);

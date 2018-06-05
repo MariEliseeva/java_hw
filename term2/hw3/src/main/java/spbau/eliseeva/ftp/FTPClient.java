@@ -66,8 +66,8 @@ public class FTPClient {
      */
     private static void listAnswer(DataInputStream in) throws IOException {
         int size = in.readInt();
-        if (size == -1) {
-            System.out.println("No such directory.");
+        if (size == 0) {
+            System.out.println("No such directory or the directory is empty.");
             return;
         }
         System.out.print(size);
@@ -86,12 +86,8 @@ public class FTPClient {
      */
     private static void getAnswer(DataInputStream in, String fileName) throws IOException {
         long size = in.readLong();
-        if (size == -1) {
-            System.out.println("Wrong name, file does not exist.");
-            return;
-        }
-        if (size == -2) {
-            System.out.println("File is directory.");
+        if (size == 0) {
+            System.out.println("File does not exist, empty or file is directory.");
             return;
         }
         System.out.print(size);
