@@ -87,6 +87,17 @@ public class MainTest {
         Main.main(new String[0]);
         assertArrayEquals(("Write directory name:" + END_OF_LINE +
                 "Write class name:" + END_OF_LINE  +
-                "Too many After methods." + END_OF_LINE).getBytes(), outputStream.toByteArray());
+                "Too many methods with same annotations." + END_OF_LINE).getBytes(), outputStream.toByteArray());
+    }
+
+    @Test
+    public void MultipleAnnotationTest() {
+        System.setIn(new ByteArrayInputStream(("build/classes/java/test\nspbau.eliseeva.XUnit.MultipleAnnotationTest\n").getBytes()));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+        Main.main(new String[0]);
+        assertArrayEquals(("Write directory name:" + END_OF_LINE +
+                "Write class name:" + END_OF_LINE  +
+                "Too many annotations for afterBefore" + END_OF_LINE).getBytes(), outputStream.toByteArray());
     }
 }

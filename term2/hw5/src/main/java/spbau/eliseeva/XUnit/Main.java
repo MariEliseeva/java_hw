@@ -12,8 +12,10 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /** The main class for running tests using annotations.*/
 public class Main {
@@ -40,21 +42,16 @@ public class Main {
         List<Method> afterMethods = getMethods(clazz, After.class);
         List<Method> beforeClassMethods = getMethods(clazz, BeforeClass.class);
         List<Method> afterClassMethods = getMethods(clazz, AfterClass.class);
-        if (beforeClassMethods.size() > 1) {
-            System.out.println("Too many BeforeClass methods.");
+        if (checkBadAnnotations(beforeMethods, false) || checkBadAnnotations(afterMethods, false) ||
+                checkBadAnnotations(beforeClassMethods, false) || checkBadAnnotations(afterClassMethods, false)) {
             return;
         }
-        if (afterClassMethods.size() > 1) {
-            System.out.println("Too many AfterClass methods.");
-            return;
-        }
-        if (beforeMethods.size() > 1) {
-            System.out.println("Too many Before methods.");
-            return;
-        }
-        if (afterMethods.size() > 1) {
-            System.out.println("Too many After methods.");
-            return;
+        for (Method method : testMethods) {
+            List<Method> methodList = new ArrayList<>();
+            methodList.add(method);
+            if (checkBadAnnotations(methodList, true)) {
+                return;
+            }
         }
 
         List<Report> reports = new ArrayList<>();
@@ -87,6 +84,42 @@ public class Main {
             System.out.println("Success: " + report.isSuccess);
             System.out.println();
         }
+    }
+
+    /**
+     * Checks if methods are not multiple and annotations for one method are not multiple.
+     * @param methods method to check
+     * @return true if mistake.
+     */
+    private static boolean checkBadAnnotations(List<Method> methods, boolean isTest) {
+        if (methods.size() == 0) {
+            return false;
+        }
+        if (methods.size() > 1 && !isTest) {
+            System.out.println("Too many methods with same annotations.");
+            return true;
+        }
+        int annotationNumber = 0;
+        if (methods.get(0).getAnnotation(Test.class) != null ) {
+            annotationNumber++;
+        }
+        if (methods.get(0).getAnnotation(After.class) != null ) {
+            annotationNumber++;
+        }
+        if (methods.get(0).getAnnotation(Before.class) != null ) {
+            annotationNumber++;
+        }
+        if (methods.get(0).getAnnotation(AfterClass.class) != null ) {
+            annotationNumber++;
+        }
+        if (methods.get(0).getAnnotation(BeforeClass.class) != null ) {
+            annotationNumber++;
+        }
+        if (annotationNumber > 1) {
+            System.out.println("Too many annotations for " + methods.get(0).getName());
+            return true;
+        }
+        return false;
     }
 
     /**
