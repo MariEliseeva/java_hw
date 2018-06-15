@@ -14,7 +14,7 @@ import spbau.eliseeva.ftp.FTPClient;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.util.Map;
+import java.util.*;
 
 /** Controller for a list with directories.*/
 class FoldersController {
@@ -36,45 +36,22 @@ class FoldersController {
         this.hostName = hostName;
         try {
             names = client.listAnswer(root);
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            mistake("Not possible to open folder.");
+            Platform.exit();
         }
         Button[] buttons = new Button[names.size()];
         int index = 0;
-        for (Map.Entry<String, Boolean> entry : names.entrySet()) {
+        List<Map.Entry<String, Boolean>> entries = new ArrayList<>(names.entrySet());
+        entries.sort((x, y) -> x.getKey().compareToIgnoreCase(y.getKey()));
+        for (Map.Entry<String, Boolean> entry : entries) {
             buttons[index] = makeButton(root, entry.getKey(), entry.getValue());
             index++;
         }
-        HBox[] rows;
+        HBox[] rows = makeBackButton(root);
         int j = 0;
-        if (!root.equals("/")) {
-            rows = new HBox[names.size() + 1];
-            rows[0] = new HBox();
-            Button backButton = new Button();
-            backButton.setFocusTraversable(false);
-            backButton.setMaxWidth(400);
-            backButton.setMaxHeight(400);
-            backButton.setText("<-");
-            backButton.setStyle(" -fx-text-fill: #590ec7; -fx-opacity: 1.0;");
-            backButton.setOnMouseClicked(event -> {
-                Stage stage = (Stage) backButton.getScene().getWindow();
-                int ind = root.length() - 1;
-                while (root.charAt(ind) != '/') {
-                    ind--;
-                }
-                if (ind == 0) {
-                    ind++;
-                }
-                String newRoot = root.substring(0, ind);
-                stage.setScene(new FoldersController(newRoot, portNumber, hostName).getScene());
-                stage.show();
-            });
-
-            HBox.setHgrow(backButton, Priority.ALWAYS);
-            backButton.prefWidthProperty().bind(rows[0].widthProperty().divide(2));
-            rows[0].getChildren().add(backButton);
+        if (rows.length != names.size()) {
             j++;
-        } else {
-            rows = new HBox[names.size()];
         }
         for (int i = 0; i < names.size(); i++, j++) {
             rows[j] = new HBox();
@@ -126,17 +103,13 @@ class FoldersController {
                 try {
                     fxmlLoader.setLocation(new File("src/main/resources/save.fxml").toURI().toURL());
                 } catch (MalformedURLException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Not possible to save file.");
-                    alert.showAndWait();
+                    mistake("Not possible to save file.");
                 }
                 Scene scene = null;
                 try {
                     scene = new Scene(fxmlLoader.load(), 400, 200);
                 } catch (IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Not possible to save file.");
-                    alert.showAndWait();
+                    mistake("Not possible to save file.");
                 }
                 String newRoot = root;
                 if (!root.equals("/")) {
@@ -158,5 +131,54 @@ class FoldersController {
      */
     Scene getScene() {
         return scene;
+    }
+
+    /**
+     * Shows slert with needed mistake
+     * @param message mistake to show
+     */
+    private static void mistake(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(message);
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates button for going back if needed.
+     * @param root directory to look at
+     * @return HBox with needed size and back button if needed
+     */
+    private HBox[] makeBackButton(String root) {
+        HBox[] rows;
+        if (!root.equals("/")) {
+            rows = new HBox[names.size() + 1];
+            rows[0] = new HBox();
+            Button backButton = new Button();
+            backButton.setFocusTraversable(false);
+            backButton.setMaxWidth(400);
+            backButton.setMaxHeight(400);
+            backButton.setText("<-");
+            backButton.setStyle(" -fx-text-fill: #590ec7; -fx-opacity: 1.0;");
+            backButton.setOnMouseClicked(event -> {
+                Stage stage = (Stage) backButton.getScene().getWindow();
+                int ind = root.length() - 1;
+                while (root.charAt(ind) != '/') {
+                    ind--;
+                }
+                if (ind == 0) {
+                    ind++;
+                }
+                String newRoot = root.substring(0, ind);
+                stage.setScene(new FoldersController(newRoot, portNumber, hostName).getScene());
+                stage.show();
+            });
+
+            HBox.setHgrow(backButton, Priority.ALWAYS);
+            backButton.prefWidthProperty().bind(rows[0].widthProperty().divide(2));
+            rows[0].getChildren().add(backButton);
+        } else {
+            rows = new HBox[names.size()];
+        }
+        return rows;
     }
 }

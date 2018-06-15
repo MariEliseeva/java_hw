@@ -15,12 +15,12 @@ public class FTPServer {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Write port number.\n");
+        System.out.print("Write port number." + System.lineSeparator());
         int portNumber = Integer.parseInt(scanner.nextLine());
         Thread serverThread = new Thread(() -> runServer(portNumber));
         serverThread.setDaemon(true);
         serverThread.start();
-        System.out.println("Press enter to end.\n");
+        System.out.println("Press enter to end." + System.lineSeparator());
         scanner.nextLine();
     }
 
@@ -46,7 +46,8 @@ public class FTPServer {
                 thread.setDaemon(true);
                 thread.start();
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            System.err.println("Problems with connection or reading and writing.");
         }
     }
 
@@ -122,6 +123,9 @@ public class FTPServer {
         }
         dataOutputStream.writeInt(dir.listFiles().length);
         File [] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
         Arrays.sort(files, Comparator.comparing(File::getName));
         for (File file : files) {
             dataOutputStream.writeUTF(file.getName());
