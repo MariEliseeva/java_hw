@@ -15,14 +15,15 @@ public class FTPServer {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Write port number." + System.lineSeparator());
+        System.out.print("Write port number." + END_OF_LINE);
         int portNumber = Integer.parseInt(scanner.nextLine());
         Thread serverThread = new Thread(() -> runServer(portNumber));
         serverThread.setDaemon(true);
         serverThread.start();
-        System.out.println("Press enter to end." + System.lineSeparator());
+        System.out.println("Press enter to end." + END_OF_LINE);
         scanner.nextLine();
     }
+    private static final String END_OF_LINE = System.lineSeparator();
 
     /**
      * Waits for connections and work with requests while not interrupted.
@@ -82,14 +83,14 @@ public class FTPServer {
      */
     private static void get(String fileName, DataOutputStream dataOutputStream) throws IOException {
         if ((new File(fileName)).isDirectory()) {
-            dataOutputStream.writeLong(-2);
+            dataOutputStream.writeLong(0);
             return;
         }
         FileInputStream fileInputStream;
         try {
             fileInputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            dataOutputStream.writeLong(-1);
+            dataOutputStream.writeLong(0);
             return;
         }
         int size = 0;
@@ -118,7 +119,7 @@ public class FTPServer {
     private static void list(String directoryName, DataOutputStream dataOutputStream) throws IOException {
         File dir = new File(directoryName);
         if (!dir.isDirectory()) {
-            dataOutputStream.writeInt(-1);
+            dataOutputStream.writeInt(0);
             return;
         }
         dataOutputStream.writeInt(dir.listFiles().length);

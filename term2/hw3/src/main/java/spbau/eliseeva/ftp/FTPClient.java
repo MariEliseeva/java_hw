@@ -48,6 +48,7 @@ public class FTPClient {
      * @param fileName name of file to save
      * @throws IOException if problems with files
      */
+
     public void getAnswer(String fromUser, String fileName) throws IOException {
         Socket socket = new Socket(InetAddress.getByName(hostName), portNumber);
         DataInputStream in = new DataInputStream(socket.getInputStream());
