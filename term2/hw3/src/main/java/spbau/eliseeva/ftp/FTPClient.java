@@ -13,9 +13,9 @@ public class FTPClient {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Write host name.\n");
+        System.out.print("Write host name." + END_OF_LINE);
         String hostName = scanner.nextLine();
-        System.out.print("Write port number.\n");
+        System.out.print("Write port number." + END_OF_LINE);
         int portNumber = Integer.parseInt(scanner.nextLine());
         try {
             checkConnection(hostName, portNumber);
@@ -24,6 +24,7 @@ public class FTPClient {
             System.err.println("Problems with connection or reading and writing.");
         }
     }
+    private static final String END_OF_LINE = System.lineSeparator();
 
     /**
      * While user has not printed "exit" waits for new command and sends requests to server.

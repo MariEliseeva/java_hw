@@ -15,14 +15,15 @@ public class FTPServer {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Write port number.\n");
+        System.out.print("Write port number." + END_OF_LINE);
         int portNumber = Integer.parseInt(scanner.nextLine());
         Thread serverThread = new Thread(() -> runServer(portNumber));
         serverThread.setDaemon(true);
         serverThread.start();
-        System.out.println("Press enter to end.\n");
+        System.out.println("Press enter to end." + END_OF_LINE);
         scanner.nextLine();
     }
+    private static final String END_OF_LINE = System.lineSeparator();
 
     /**
      * Waits for connections and work with requests while not interrupted.
