@@ -47,7 +47,8 @@ public class FTPServer {
                 thread.setDaemon(true);
                 thread.start();
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            System.err.println("Problems with connection or reading and writing.");
         }
     }
 
@@ -58,20 +59,20 @@ public class FTPServer {
      * @throws IOException thrown if problems with reading or writing, for example when connection is lost.
      */
     private static void processInput(DataInputStream dataInputStream, DataOutputStream dataOutputStream) throws IOException {
-            Command command = Command.values()[dataInputStream.readInt()];
-            switch (command) {
-                case LIST:
-                    list(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case GET:
-                    get(dataInputStream.readUTF(), dataOutputStream);
-                    break;
-                case CONNECT:
-                    dataOutputStream.writeUTF("connected");
-                    break;
-                default:
-                    dataOutputStream.writeUTF("wrong command.");
-            }
+        Command command = Command.values()[dataInputStream.readInt()];
+        switch (command) {
+            case LIST:
+                list(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case GET:
+                get(dataInputStream.readUTF(), dataOutputStream);
+                break;
+            case CONNECT:
+                dataOutputStream.writeUTF("connected");
+                break;
+            default:
+                dataOutputStream.writeUTF("wrong command.");
+        }
     }
 
     /**
@@ -123,6 +124,9 @@ public class FTPServer {
         }
         dataOutputStream.writeInt(dir.listFiles().length);
         File [] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
         Arrays.sort(files, Comparator.comparing(File::getName));
         for (File file : files) {
             dataOutputStream.writeUTF(file.getName());
